@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -15,10 +14,8 @@ import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:unicorndial/unicorndial.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 
 class AttendancePage extends StatefulWidget {
@@ -343,7 +340,6 @@ class _AttendancePageState extends State<AttendancePage>
     Color backgroundColor = Theme.of(context).cardColor;
     Color foregroundColor = Theme.of(context).accentColor;
 
-    List<UnicornButton> childButtons = new List();
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Attendance'),
@@ -352,54 +348,6 @@ class _AttendancePageState extends State<AttendancePage>
         _scaffoldContext = context;
         return _getContents();
       }),
-      floatingActionButton: authProvider.user.permissions
-                  .where((permission) =>
-                      permission.name.contains('All') ||
-                      permission.name.contains('Records') ||
-                      permission.name.contains('EventScanning'))
-                  .length !=
-              0
-          ? UnicornDialer(
-              backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-              parentButtonBackground: Theme.of(context).accentColor,
-              orientation: UnicornOrientation.VERTICAL,
-              parentButton: Icon(Icons.add, color: Colors.white),
-              childButtons: [
-                  UnicornButton(
-                      currentButton: FloatingActionButton(
-                          heroTag: "Scan",
-                          backgroundColor: Theme.of(context).accentColor,
-                          mini: true,
-                          onPressed: () => showScanner(context),
-                          child: Icon(Icons.camera, color: Colors.white))),
-                  UnicornButton(
-                      currentButton: FloatingActionButton(
-                          heroTag: "List",
-                          backgroundColor: Theme.of(context).accentColor,
-                          mini: true,
-                          onPressed: () async {
-                            List<int> ids = await Navigator.push(
-                                context,
-                                new MaterialPageRoute(
-                                    builder: (context) =>
-                                        null)); //new UserAddPage()));
-                            debugPrint(ids.toString());
-                            if (ids != null) {
-                              if (ids.length == 1) {
-                                for (var id in ids) {
-                                  await _addRecord(id);
-                                }
-                              } else {
-                                await _addRecordBatch(ids);
-                              }
-                            }
-                          },
-                          child: Icon(
-                            Icons.view_list,
-                            color: Colors.white,
-                          )))
-                ])
-          : null,
     );
   }
 }

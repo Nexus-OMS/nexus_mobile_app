@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:html2md/html2md.dart' as html2d;
 import 'package:nexus_mobile_app/ui/components/NSearchIconButton.dart';
 import 'package:nexus_mobile_app/ui/components/NSliverIconButton.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NUpdateTile.dart';
@@ -13,7 +12,7 @@ class UpdatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String text = html2d.convert(update.update_text);
+    String text = update.update_text;
     return new Scaffold(
       appBar: AppBar(
         title: new Text(update.update_title),

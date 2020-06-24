@@ -24,28 +24,28 @@ class NexusApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>(
-          builder: (_) => AuthProvider(),
+          create: (_) => AuthProvider(),
         ),
         ChangeNotifierProvider<AttendanceProvider>(
-          builder: (_) => AttendanceProvider(),
+          create: (_) => AttendanceProvider(),
         ),
         ChangeNotifierProvider<AttendanceTypeProvider>(
-          builder: (_) => AttendanceTypeProvider(),
+          create: (_) => AttendanceTypeProvider(),
         ),
         ChangeNotifierProvider<EventProvider>(
-          builder: (_) => EventProvider(),
+          create: (_) => EventProvider(),
         ),
         ChangeNotifierProvider<EventTypeProvider>(
-          builder: (_) => EventTypeProvider(),
+          create: (_) => EventTypeProvider(),
         ),
         ChangeNotifierProvider<UserProvider>(
-          builder: (_) => UserProvider(),
+          create: (_) => UserProvider(),
         ),
         ChangeNotifierProvider<TermProvider>(
-          builder: (_) => TermProvider(),
+          create: (_) => TermProvider(),
         ),
         ChangeNotifierProvider<LevelProvider>(
-          builder: (_) => LevelProvider(),
+          create: (_) => LevelProvider(),
         )
       ],
       child: new MaterialApp(
