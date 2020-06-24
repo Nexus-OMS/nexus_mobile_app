@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/providers/UserProvider.dart';
 import 'package:nexus_mobile_app/ui/components/ImageLoader.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:flutter/services.dart';
-import 'package:nexus_mobile_app/NColors.dart';
 
 import 'dart:math' as math;
 
@@ -188,7 +187,7 @@ class _ProfilePageHeaderDelegate extends SliverPersistentHeaderDelegate {
                         await launch('sms:' + user.phone);
                       }
                     : null,
-                color: NColors.primary,
+                color: NexusTheme.primary,
                 disabledColor: new Color.fromARGB(255, 220, 220, 220)),
             new IconButton(
               icon: new Icon(Icons.phone),
@@ -197,7 +196,7 @@ class _ProfilePageHeaderDelegate extends SliverPersistentHeaderDelegate {
                       await launch('tel:' + user.phone);
                     }
                   : null,
-              color: NColors.primary,
+              color: NexusTheme.primary,
               disabledColor: new Color(0xDDFFFFFF),
             ),
             new IconButton(
@@ -207,7 +206,7 @@ class _ProfilePageHeaderDelegate extends SliverPersistentHeaderDelegate {
                       await launch('mailto:' + user.un + '@rit.edu');
                     }
                   : null,
-              color: NColors.primary,
+              color: NexusTheme.primary,
               disabledColor: new Color(0xDDFFFFFF),
             )
           ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/NColors.dart' as NColor;
 
 class SkeletonText extends StatefulWidget {
   final double height;

@@ -8,8 +8,9 @@ import 'package:nexus_mobile_app/ui/components/tiles/NMemberTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'dart:math' as math;
-import 'package:nexus_mobile_app/NColors.dart';
 import 'package:provider/provider.dart';
+
+import '../theme.dart';
 
 class MembersPage extends StatefulWidget {
   @override
@@ -53,7 +54,7 @@ class _MembersPageState extends State<MembersPage>
               elevation: 0,
               leading: new NSliverIconButton(
                   onPressed: null, icon: Icon(OMIcons.menu)),
-              backgroundColor: NColors.primary,
+              backgroundColor: NexusTheme.primary,
               flexibleSpace: new FlexibleSpaceBar(
                 title: Text(
                   'Members',

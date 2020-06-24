@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/components/NSearchIconButton.dart';
-import 'package:nexus_mobile_app/NColors.dart';
 
 import 'package:flutter/material.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 
 class DashboardPage extends StatelessWidget {
   final List<Map> collections = [
@@ -19,7 +18,7 @@ class DashboardPage extends StatelessWidget {
           Container(
             height: 200.0,
             decoration: BoxDecoration(
-              color: NColors.primary,
+              color: NexusTheme.primary,
             ),
           ),
           ListView.builder(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/NColors.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -21,7 +21,6 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     return new Scaffold(
-      backgroundColor: NColors.background,
       appBar: new AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
@@ -53,14 +52,14 @@ class _SearchPageState extends State<SearchPage> {
               ),
               filled: true,
               hintText: 'Search...',
-              fillColor: NColors.lightGrey,
+              fillColor: NexusTheme.lightGrey,
               border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: NColors.lightGrey),
+                borderSide: BorderSide(color: NexusTheme.lightGrey),
                 borderRadius: BorderRadius.circular(16),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: NColors.lightGrey),
+                borderSide: BorderSide(color: NexusTheme.lightGrey),
                 borderRadius: BorderRadius.circular(16),
               ),
             ),

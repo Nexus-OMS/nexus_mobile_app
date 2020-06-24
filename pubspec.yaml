@@ -33,6 +33,7 @@ dependencies:
   camera: ^0.5.8+2
   firebase_ml_vision: ^0.9.4
   flushbar: ^1.10.4
+  google_fonts: ^1.1.0
   outline_material_icons: ^0.1.1
 
 dev_dependencies:

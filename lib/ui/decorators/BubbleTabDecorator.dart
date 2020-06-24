@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/NColors.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 
 class BubbleTabDecorator extends Decoration {
   @override
@@ -29,7 +29,7 @@ class _CustomPainter extends BoxPainter {
         Size(configuration.size.width, indicatorHeight);
 
     final Paint paint = Paint();
-    paint.color = NColors.primary;
+    paint.color = NexusTheme.primary;
     paint.style = PaintingStyle.fill;
     canvas.drawRRect(
         RRect.fromRectAndRadius(rect, Radius.circular(14.0)), paint);

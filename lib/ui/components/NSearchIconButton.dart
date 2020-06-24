@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/NColors.dart';
 import 'package:nexus_mobile_app/ui/presenters/SearchPage.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 
 class NSearchIconButton extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _NSearchIconButtonState extends State<NSearchIconButton>
   Animation<double> _animation;
   AnimationController _controller;
   double _fraction = 0.0;
-  Color _color = NColors.dark;
+  Color _color = NexusTheme.dark;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _NSearchIconButtonState extends State<NSearchIconButton>
       ..addListener(() {
         setState(() {
           _fraction = _animation.value;
-          if (_animation.value == 0.0) _color = NColors.dark;
+          if (_animation.value == 0.0) _color = NexusTheme.dark;
           if (_animation.value == 0.1) _color = Colors.white;
         });
       });
@@ -76,7 +76,7 @@ class SearchButtonPainter extends CustomPainter {
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), radius, paint);
 
     var greyPaint = Paint()
-      ..color = NColors.lightGrey
+      ..color = NexusTheme.lightGrey
       ..style = PaintingStyle.fill;
     //canvas.drawRect(Rect.fromCenter(center: Offset(40, 28), width: 40, height: 40), greyPaint);
     //canvas.drawCircle(Offset(20, 28), 20, greyPaint);

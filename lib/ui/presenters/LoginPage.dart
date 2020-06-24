@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/enum/TaskStatus.dart';
-import 'package:nexus_mobile_app/NColors.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -40,7 +40,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext mainContext) {
-    colors = [NColors.primary, NColors.primary, Colors.green, NColors.danger];
+    colors = [
+      NexusTheme.primary,
+      NexusTheme.primary,
+      Colors.green,
+      NexusTheme.danger
+    ];
     return new Scaffold(
       backgroundColor: Colors.white,
       body: new Builder(builder: (BuildContext context) {
@@ -91,24 +96,27 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             decoration: new InputDecoration(
                               filled: true,
                               hintText: 'Username',
-                              fillColor: NColors.lightGrey,
+                              fillColor: NexusTheme.lightGrey,
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.all(16.0),
                               errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: NColors.danger),
+                                borderSide:
+                                    BorderSide(color: NexusTheme.danger),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: NColors.primary),
+                                borderSide:
+                                    BorderSide(color: NexusTheme.primary),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: NColors.warning),
+                                borderSide:
+                                    BorderSide(color: NexusTheme.warning),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
-                                    BorderSide(color: NColors.lightGrey),
+                                    BorderSide(color: NexusTheme.lightGrey),
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             )),
@@ -136,23 +144,24 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           decoration: new InputDecoration(
                             hintText: 'Password',
                             filled: true,
-                            fillColor: NColors.lightGrey,
+                            fillColor: NexusTheme.lightGrey,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(16.0),
                             errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: NColors.danger),
+                              borderSide: BorderSide(color: NexusTheme.danger),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: NColors.primary),
+                              borderSide: BorderSide(color: NexusTheme.primary),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: NColors.warning),
+                              borderSide: BorderSide(color: NexusTheme.warning),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: NColors.lightGrey),
+                              borderSide:
+                                  BorderSide(color: NexusTheme.lightGrey),
                               borderRadius: BorderRadius.circular(16),
                             ),
                           ),

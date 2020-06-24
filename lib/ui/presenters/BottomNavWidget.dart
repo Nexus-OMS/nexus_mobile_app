@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:nexus_mobile_app/NColors.dart';
 
 import 'DashboardPage.dart';
-import 'LoginPage.dart';
 import 'MembersPage.dart';
 import 'EventsPage.dart';
 import 'UpdatesPage.dart';
@@ -49,8 +48,8 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
         ],
         currentIndex: _selectedIndex,
         iconSize: 24.0,
-        selectedItemColor: NColors.dark,
-        unselectedItemColor: NColors.dark.withOpacity(0.7),
+        selectedItemColor: NexusTheme.dark,
+        unselectedItemColor: NexusTheme.dark.withOpacity(0.7),
         backgroundColor: Color.fromARGB(170, 255, 255, 255),
         onTap: _onItemTapped,
       ),
