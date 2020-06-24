@@ -30,11 +30,12 @@ dependencies:
   intl: ^0.16.1
   url_launcher: ^5.4.11
   connectivity: ^0.4.8+6
-  camera: ^0.5.8+2
-  firebase_ml_vision: ^0.9.4
   flushbar: ^1.10.4
   google_fonts: ^1.1.0
   outline_material_icons: ^0.1.1
+  barcode_scan: ^3.0.1
+  flutter_bloc: ^4.0.1
+  equatable: ^1.2.0
 
 dev_dependencies:
   flutter_test:

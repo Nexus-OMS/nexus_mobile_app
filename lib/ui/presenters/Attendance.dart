@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:camera/camera.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/providers/AttendanceProvider.dart';
 import 'package:nexus_mobile_app/providers/AttendanceTypeProvider.dart';
-import 'package:nexus_mobile_app/providers/AuthProvider.dart';
 import 'package:nexus_mobile_app/providers/TermProvider.dart';
 import 'package:nexus_mobile_app/providers/UserProvider.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
@@ -12,9 +12,7 @@ import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flushbar/flushbar.dart';
 import 'dart:async';
 
@@ -34,7 +32,6 @@ class _AttendancePageState extends State<AttendancePage>
   BuildContext _scaffoldContext;
   TabController tabController;
   AttendanceProvider attendanceProvider;
-  AuthProvider authProvider;
   AttendanceTypeProvider attendanceTypeProvider;
   TermProvider termProvider;
 
@@ -203,30 +200,14 @@ class _AttendancePageState extends State<AttendancePage>
   }
 
   showScanner(BuildContext context) async {
-    List<CameraDescription> cameras = await availableCameras();
-
-    CameraController controller;
-    controller = new CameraController(cameras[0], ResolutionPreset.medium);
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-    });
     showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext context) {
-          if (!controller.value.isInitialized) {
-            return new Container();
-          }
           return new GestureDetector(
             child: new Stack(
               alignment: FractionalOffset.center,
               children: <Widget>[
-                new Positioned.fill(
-                  child: new AspectRatio(
-                      aspectRatio: controller.value.aspectRatio,
-                      child: new CameraPreview(controller)),
-                ),
+                new Positioned.fill(child: Container()),
                 new Positioned.fill(
                     child: new IgnorePointer(
                   child: new ClipPath(
@@ -238,59 +219,26 @@ class _AttendancePageState extends State<AttendancePage>
                 )),
               ],
             ),
-            /*AspectRatio(
-            aspectRatio:
-            controller.value.aspectRatio,
-            child: new CameraPreview(controller)
-          ),
-          */
-            onTap: () => scanID(controller),
+            onTap: () => scanID(),
           );
         });
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
-  Future<String> takePicture(controller) async {
-    final Directory extDir = await getApplicationDocumentsDirectory();
-    final String dirPath = '${extDir.path}/pic_temp';
-    await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${timestamp()}.jpg';
-
-    if (controller.value.isTakingPicture) {
-      // A capture is already pending, do nothing.
-      return null;
-    }
-
-    try {
-      await controller.takePicture(filePath);
-    } on CameraException catch (e) {
-      print("Unable to save photo");
-      return null;
-    }
-    return filePath;
-  }
-
-  Future<List<dynamic>> scanID(controller) async {
-    String ppath = await takePicture(controller);
-    debugPrint(ppath);
+  Future<List<dynamic>> scanID() async {
+    String ppath = "";
 
     File file = File(ppath);
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(file);
-
-    BarcodeDetector detector = FirebaseVision.instance.barcodeDetector();
-
-    final List<Barcode> results =
-        await detector.detectInImage(visionImage) ?? <Barcode>[];
-    print(results);
+    //final List<Barcode> results =
+    //await detector.detectInImage(visionImage) ?? <Barcode>[];
+    List<String> results;
     if (results.length != 0) {
-      print(results.first.displayValue);
-
       await AuthorizedClient.post(
           route: APIRoutes.routes[Attendance] + '/storebyuid',
           content: <String, String>{
             'attendance_type': 4.toString(),
-            'rit_uid': results.first.displayValue.substring(0, 9),
+            //'rit_uid': results.first.displayValue.substring(0, 9),
             'event_id': widget.event_id.toString()
           }).then((value) {
         print(value);
@@ -332,7 +280,6 @@ class _AttendancePageState extends State<AttendancePage>
 
   @override
   Widget build(BuildContext context) {
-    authProvider = Provider.of<AuthProvider>(context);
     attendanceProvider = Provider.of<AttendanceProvider>(context);
     attendanceTypeProvider = Provider.of<AttendanceTypeProvider>(context);
     termProvider = Provider.of<TermProvider>(context);

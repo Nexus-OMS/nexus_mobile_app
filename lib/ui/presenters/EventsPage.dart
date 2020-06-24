@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/providers/AuthProvider.dart';
 import 'package:nexus_mobile_app/providers/EventProvider.dart';
 import 'package:nexus_mobile_app/providers/EventTypeProvider.dart';
 import 'package:nexus_mobile_app/providers/TermProvider.dart';
@@ -100,7 +99,6 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
   ///
   /// Returns a widget for the entire page
   Widget _getTabController(context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Events'),
@@ -110,7 +108,10 @@ class _EventsPageState extends State<EventsPage> with TickerProviderStateMixin {
         controller: tabController,
         children: _getPages(context),
       ),
-      floatingActionButton: authProvider.user.permissions
+      floatingActionButton: (BlocProvider.of<AuthenticationBloc>(context).state
+                      as AuthenticationStateAuthenticated)
+                  .user
+                  .permissions
                   .where((permission) =>
                       permission.name.contains('All') ||
                       permission.name.contains('Records'))
