@@ -36,6 +36,7 @@ dependencies:
   barcode_scan: ^3.0.1
   flutter_bloc: ^4.0.1
   equatable: ^1.2.0
+  flutter_widget_from_html_core: ^0.4.1
 
 dev_dependencies:
   flutter_test:

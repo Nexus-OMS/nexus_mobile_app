@@ -86,8 +86,7 @@ class NexusTheme {
       headline5: GoogleFonts.sourceSansPro(
           textStyle: textTheme.headline5.copyWith(fontSize: 24.0)),
       headline6: GoogleFonts.sourceSansPro(
-          textStyle: textTheme.headline6
-              .copyWith(fontSize: 28.0, fontWeight: FontWeight.w700)),
+          textStyle: textTheme.headline6.copyWith(fontWeight: FontWeight.w700)),
       subtitle1: GoogleFonts.openSans(textStyle: textTheme?.subtitle1),
       bodyText1: GoogleFonts.openSans(textStyle: textTheme?.bodyText1),
       bodyText2: GoogleFonts.openSans(textStyle: textTheme?.bodyText2),

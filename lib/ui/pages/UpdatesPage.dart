@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/ui/components/NSearchIconButton.dart';
@@ -20,11 +21,11 @@ class UpdatePage extends StatelessWidget {
         title: new Text(update.update_title),
       ),
       body: new Padding(
-        padding: new EdgeInsets.all(8.0),
-        child: new ListView(
-          children: <Widget>[new Text(text)],
-        ),
-      ),
+          padding: new EdgeInsets.all(16.0),
+          child: HtmlWidget(
+            text,
+            tableCellPadding: EdgeInsets.all(0),
+          )),
     );
   }
 }
