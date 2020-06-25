@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/presenters/SearchPage.dart';
+import 'package:nexus_mobile_app/ui/pages/SearchPage.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class NSearchIconButton extends StatefulWidget {

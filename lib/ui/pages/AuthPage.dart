@@ -234,14 +234,6 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     }
   }
 
-  RoundedRectangleBorder getCorners() {
-    if (_state != 0)
-      return new RoundedRectangleBorder(
-          borderRadius: new BorderRadius.all(new Radius.circular(24.0)));
-    return new RoundedRectangleBorder(
-        borderRadius: new BorderRadius.all(new Radius.circular(16.0)));
-  }
-
   void onSubmit() {
     final form = formKey.currentState;
     if (!form.validate()) {

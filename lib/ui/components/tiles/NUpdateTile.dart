@@ -4,8 +4,7 @@ import 'package:nexus_mobile_app/models/Update.dart';
 import 'package:nexus_mobile_app/providers/UserProvider.dart';
 import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/presenters/UpdatesPage.dart';
-import 'package:provider/provider.dart';
+import 'package:nexus_mobile_app/ui/pages/UpdatesPage.dart';
 
 class NUpdateTile extends StatelessWidget {
   final Update update;

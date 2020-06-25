@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/repositories/update_repository.dart';
+import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
@@ -20,7 +23,9 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
     new DashboardPage(),
     new MembersPage(),
     new EventsPage(),
-    new UpdatesPage()
+    BlocProvider(
+        create: (context) => UpdateBloc(repository: UpdateRepository()),
+        child: UpdatesPage())
   ];
 
   void _onItemTapped(int index) {

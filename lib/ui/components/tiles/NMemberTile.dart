@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/presenters/ProfilePage.dart';
+import 'package:nexus_mobile_app/ui/pages/ProfilePage.dart';
 
 class NMemberTile extends StatelessWidget {
   final User user;

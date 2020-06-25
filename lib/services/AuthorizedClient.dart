@@ -9,8 +9,8 @@ import 'package:http/http.dart';
 
 class AuthorizedClient {
   //Constants
-  static String TOKEN_KEY = "AFSABRE_ACCESS_TOKEN";
-  static String USERNAME_KEY = "AFSABRE_USERNAME";
+  static String TOKEN_KEY = "NEXUS_ACCESS_TOKEN";
+  static String USERNAME_KEY = "NEXUS_USERNAME";
 
   static StreamController authDoneController = new StreamController.broadcast();
 
@@ -156,9 +156,9 @@ class AuthorizedClient {
 
   static Future<Map<String, String>> GetConstants([String username]) async {
     Map<String, String> DevConstants = {
-      "BASE_URI": "http://10.0.2.2",
+      "BASE_URI": "http://localhost",
       "CLIENT_ID": "2",
-      "CLIENT_SECRET": "",
+      "CLIENT_SECRET": "kMXvdLmDal3YtQtJUsDGPp8M88eFYazikpXCuIdv",
       "GRANT_TYPE": "password",
       "SCOPE": ""
     };
@@ -194,6 +194,7 @@ class AuthorizedClient {
   static Future<TaskStatus> storeUsername(String username) async {
     debugPrint('\tStoring Username: ' + username);
     try {
+      await deleteUsername();
       await _getSecureStorage().write(key: USERNAME_KEY, value: username);
     } catch (e) {
       print(e);
@@ -213,12 +214,14 @@ class AuthorizedClient {
   }
 
   static Future<String> retrieveAccessToken() async {
-    return await _getSecureStorage().read(key: TOKEN_KEY);
+    var ret = await _getSecureStorage().read(key: TOKEN_KEY);
+    return ret;
   }
 
   static Future<TaskStatus> storeAccessToken(String accessToken) async {
     debugPrint('\tStoring Access Token: ' + accessToken);
     try {
+      await deleteAccessToken();
       await _getSecureStorage().write(key: TOKEN_KEY, value: accessToken);
     } catch (e) {
       print(e);

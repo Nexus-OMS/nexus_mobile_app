@@ -8,7 +8,7 @@ import 'package:nexus_mobile_app/providers/TermProvider.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:intl/intl.dart';
-import 'package:nexus_mobile_app/ui/presenters/Attendance.dart';
+import 'package:nexus_mobile_app/ui/pages/Attendance.dart';
 import 'package:provider/provider.dart';
 
 class EventsPage extends StatefulWidget {
