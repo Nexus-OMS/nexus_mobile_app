@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -17,16 +19,26 @@ class UpdatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     String text = update.update_text;
     return Scaffold(
-      appBar: AppBar(
-        title: new Text(update.update_title),
-      ),
-      body: new Padding(
-          padding: new EdgeInsets.all(16.0),
-          child: HtmlWidget(
-            text,
-            tableCellPadding: EdgeInsets.all(0),
-          )),
-    );
+        body: SafeArea(
+            child: ListView(shrinkWrap: true, children: <Widget>[
+      Row(children: [
+        Padding(
+            padding: EdgeInsets.only(left: 14.0, bottom: 14.0),
+            child: IconButton(
+                icon: Icon(Icons.chevron_left, size: 36.0),
+                onPressed: () => Navigator.of(context).pop()))
+      ]),
+      Padding(
+          padding: new EdgeInsets.only(left: 36.0, right: 36.0),
+          child: Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme:
+                      Theme.of(context).textTheme.apply(fontSizeFactor: 2.0)),
+              child: HtmlWidget(
+                text,
+                tableCellPadding: EdgeInsets.all(0),
+              ))),
+    ])));
   }
 }
 
@@ -37,7 +49,11 @@ class UpdatesPage extends StatelessWidget {
       if (state is UpdateStateUninitialized)
         context.bloc<UpdateBloc>().add(UpdateEventPage());
       return RefreshIndicator(
-          onRefresh: () {},
+          onRefresh: () {
+            Completer completer = new Completer();
+            context.bloc<UpdateBloc>().add(UpdateEventRefresh(completer));
+            return completer.future;
+          },
           child: CustomScrollView(slivers: <Widget>[
             SliverAppBar(
               pinned: true,
@@ -47,8 +63,6 @@ class UpdatesPage extends StatelessWidget {
                 NSearchIconButton(),
               ],
               elevation: 0,
-              leading:
-                  NSliverIconButton(onPressed: null, icon: Icon(OMIcons.menu)),
               backgroundColor: Colors.white,
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(

@@ -36,14 +36,13 @@ class User extends APIModel {
   User.fromMap(Map map) {
     id = map['o_id'];
     un = map['un'];
-    level = map['level'] == null ? null : Level.fromMap(map['level']);
-    rank = map['rank'] == null ? null : Rank.fromMap(map['rank']);
-    position = map['primary_position'] == null
-        ? null
-        : Position.fromMap(map['primary_position']);
+    level = nullInt(map['level'], process: (n) => Level.fromMap(map['level']));
+    rank = nullInt(map['rank'], process: (n) => Rank.fromMap(map['rank']));
+    position =
+        nullInt(map['primary_position'], process: (n) => Position.fromMap(n));
     firstName = map['firstName'];
     lastName = map['lastName'];
-    phone = nullCheck(map['phone']);
+    phone = nullInt(map['phone']);
     school = map['school'];
     major = map['major'];
     hometown = map['hometown'];
@@ -57,8 +56,10 @@ class User extends APIModel {
     }
   }
 
-  String nullCheck(dynamic w) {
-    return w == null ? null : w;
+  dynamic nullInt(dynamic w, {Function process}) {
+    return (w == null || w is int)
+        ? null
+        : (process != null && w is Map<dynamic, dynamic> ? process(w) : w);
   }
 
   @override

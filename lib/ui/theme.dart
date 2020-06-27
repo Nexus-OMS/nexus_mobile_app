@@ -123,7 +123,7 @@ class NexusTheme {
   /// COLORS
   ///
 
-  static const primary = const Color(0xFF4680FF);
+  static const primary = const Color(0xFF142850);
   static const dark = const Color(0xFF353535);
   static const grey = const Color(0xFF555555);
   static const backgroundGrey = const Color(0xFFf4f5f7);

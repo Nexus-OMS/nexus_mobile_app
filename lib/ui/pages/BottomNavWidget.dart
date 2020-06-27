@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
+import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
 import 'package:nexus_mobile_app/bloc/repositories/update_repository.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/OrganizationPage.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 import 'DashboardPage.dart';
-import 'MembersPage.dart';
 import 'EventsPage.dart';
-import 'UpdatesPage.dart';
+import 'main/UpdatesPage.dart';
 
 class BottomNavWidget extends StatefulWidget {
   @override
@@ -20,9 +22,9 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   final _widgetOptions = [
-    new DashboardPage(),
-    new MembersPage(),
-    new EventsPage(),
+    DashboardPage(),
+    OrganizationPage(),
+    EventsPage(),
     BlocProvider(
         create: (context) => UpdateBloc(repository: UpdateRepository()),
         child: UpdatesPage())
@@ -37,27 +39,30 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(OMIcons.home), title: Text('Home')),
-          BottomNavigationBarItem(
-              icon: Icon(OMIcons.accountCircle), title: Text('Members')),
-          BottomNavigationBarItem(
-              icon: Icon(OMIcons.calendarToday), title: Text('Events')),
-          BottomNavigationBarItem(
-              icon: Icon(OMIcons.allInbox), title: Text('Updates')),
-        ],
-        currentIndex: _selectedIndex,
-        iconSize: 24.0,
-        selectedItemColor: NexusTheme.dark,
-        unselectedItemColor: NexusTheme.dark.withOpacity(0.7),
-        backgroundColor: Color.fromARGB(170, 255, 255, 255),
-        onTap: _onItemTapped,
-      ),
-    );
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(canvasColor: NexusTheme.primary),
+          child: BottomNavigationBar(
+            backgroundColor: NexusTheme.primary,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(OMIcons.home), title: Text('Home')),
+              BottomNavigationBarItem(
+                  icon: Icon(OMIcons.accountCircle),
+                  title: Text('Organization')),
+              BottomNavigationBarItem(
+                  icon: Icon(OMIcons.calendarToday), title: Text('Events')),
+              BottomNavigationBarItem(
+                  icon: Icon(OMIcons.allInbox), title: Text('Updates')),
+            ],
+            currentIndex: _selectedIndex,
+            iconSize: 24.0,
+            selectedItemColor: NexusTheme.textLight,
+            unselectedItemColor: NexusTheme.textLight.withOpacity(0.7),
+            onTap: _onItemTapped,
+          ),
+        ));
   }
 }

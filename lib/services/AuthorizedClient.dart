@@ -158,7 +158,7 @@ class AuthorizedClient {
     Map<String, String> DevConstants = {
       "BASE_URI": "http://localhost",
       "CLIENT_ID": "2",
-      "CLIENT_SECRET": "kMXvdLmDal3YtQtJUsDGPp8M88eFYazikpXCuIdv",
+      "CLIENT_SECRET": "EzMgk1aLbizKDxPU1W6KHUbZF9cmbPa99phxh9Qr",
       "GRANT_TYPE": "password",
       "SCOPE": ""
     };

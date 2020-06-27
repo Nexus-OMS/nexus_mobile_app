@@ -10,3 +10,4 @@ export 'Position.dart';
 export 'Rank.dart';
 export 'Permission.dart';
 export 'Announcement.dart';
+export 'Unit.dart';

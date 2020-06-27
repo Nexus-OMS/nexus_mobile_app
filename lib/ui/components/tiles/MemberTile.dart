@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/pages/ProfilePage.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/ProfilePage.dart';
 
-class NMemberTile extends StatelessWidget {
+class MemberTile extends StatelessWidget {
   final User user;
 
-  NMemberTile({@required this.user});
+  MemberTile({@required this.user});
 
   EdgeInsets textInsets = EdgeInsets.only(top: 4, bottom: 4);
   EdgeInsets subTextInsets = EdgeInsets.only(top: 2, bottom: 2);
@@ -20,12 +20,8 @@ class NMemberTile extends StatelessWidget {
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: new Border(
-                      bottom: BorderSide(
-                    color: Colors.black12,
-                    width: 1,
-                  ))),
+                color: Colors.white,
+              ),
               child: new Row(
                 children: <Widget>[
                   new ProfileAvatar(
@@ -40,45 +36,38 @@ class NMemberTile extends StatelessWidget {
                               padding: textInsets,
                               child: new Text(
                                 user.getFullName(),
-                                style: Theme.of(context).textTheme.title,
+                                style: Theme.of(context).textTheme.headline6,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            new Padding(
-                              padding: subTextInsets,
-                              child: new Text(
-                                (user.major == null ? 'N/A' : user.major),
-                                style: Theme.of(context).textTheme.body1,
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                            new Padding(
-                              padding: subTextInsets,
-                              child: new Text(
-                                user.level.name +
-                                    (user.position == null
-                                        ? ''
-                                        : " · " + user.position.name),
-                                style: Theme.of(context).textTheme.caption,
-                                maxLines: 1,
-                              ),
-                            ),
+                            user.level != null
+                                ? Padding(
+                                    padding: subTextInsets,
+                                    child: new Text(
+                                      user.level.name +
+                                          (user.position == null
+                                              ? ''
+                                              : " · " + user.position.name),
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                      maxLines: 1,
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         )),
                   )
                 ],
               )),
           onTap: () {
-            Navigator.push(
-                context,
-                new MaterialPageRoute(
-                    builder: (context) => new ProfilePage(user.id)));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProfilePage(user.id)));
           });
-    } catch (e) {
+    } catch (e, stack) {
       print(e);
-      return new NErrorTile(error_name: 'user');
+      print(stack);
+      return NErrorTile(error_name: 'user');
     }
   }
 }

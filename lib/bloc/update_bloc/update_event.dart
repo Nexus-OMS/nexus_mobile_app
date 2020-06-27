@@ -12,3 +12,10 @@ class UpdateEventPage extends UpdateEvent {
   @override
   List<Object> get props => ['UpdateEventPage', page, size];
 }
+
+class UpdateEventRefresh extends UpdateEvent {
+  final Completer completer;
+  UpdateEventRefresh(this.completer);
+  @override
+  List<Object> get props => ['UpdateEventRefresh'];
+}

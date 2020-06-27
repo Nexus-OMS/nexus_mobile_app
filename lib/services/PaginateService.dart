@@ -11,8 +11,11 @@ class PaginateService<APIModel> {
 
   PaginateService({this.arguments, @required this.route, this.next_page = 1});
 
-  Future<dynamic> page({int size = 15}) async {
+  Future<dynamic> page({int size = 15, String query}) async {
     String url = route + '?page=' + next_page.toString();
+    if (query != null) {
+      url += "&query=$query";
+    }
     var response = await AuthorizedClient.get(route: url);
     // Increase page numbers, return data
     this.last_page = response["last_page"];

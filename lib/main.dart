@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/authentication_repository.dart';
+import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
 import 'package:nexus_mobile_app/providers/AttendanceProvider.dart';
 import 'package:nexus_mobile_app/providers/AttendanceTypeProvider.dart';
 import 'package:nexus_mobile_app/providers/EventProvider.dart';
@@ -27,6 +29,11 @@ class NexusApp extends StatelessWidget {
             final AuthenticationRepository _authRepository =
                 AuthenticationRepository();
             return AuthenticationBloc(repository: _authRepository);
+          }),
+          BlocProvider(create: (context) {
+            final OrganizationRepository _orgRepository =
+                OrganizationRepository();
+            return OrganizationBloc(repository: _orgRepository);
           }),
         ],
         child: MultiProvider(

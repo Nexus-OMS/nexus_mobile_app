@@ -10,7 +10,7 @@ part 'update_event.dart';
 part 'update_state.dart';
 
 class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
-  final UpdateRepository _repository;
+  UpdateRepository _repository;
 
   UpdateBloc({@required UpdateRepository repository})
       : assert(repository != null),
@@ -25,6 +25,8 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
   ) async* {
     if (event is UpdateEventPage) {
       yield* _mapPageToState();
+    } else if (event is UpdateEventRefresh) {
+      yield* _mapRefreshToState(event.completer);
     }
   }
 
@@ -32,6 +34,22 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
     try {
       yield UpdateStateLoading(_repository.updates);
       final updates = await _repository.page();
+      if (updates == null || updates.length == 0) {
+        yield UpdateStateNoData();
+      } else {
+        yield UpdateStateHasData(updates);
+      }
+    } catch (_) {
+      yield UpdateStateError();
+    }
+  }
+
+  Stream<UpdateState> _mapRefreshToState(Completer completer) async* {
+    this._repository = new UpdateRepository();
+    try {
+      yield UpdateStateLoading(_repository.updates);
+      final updates = await _repository.page();
+      completer.complete();
       if (updates == null || updates.length == 0) {
         yield UpdateStateNoData();
       } else {
