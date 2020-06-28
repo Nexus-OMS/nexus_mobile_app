@@ -1,4 +1,6 @@
-class Event {
+import 'APIModel.dart';
+
+class Event extends APIModel {
   int id;
   DateTime date;
   int term;
@@ -7,7 +9,7 @@ class Event {
 
   Event();
 
-  Event.fromMap(Map map){
+  Event.fromMap(Map map) {
     id = map['o_id'] is String ? int.parse(map['o_id']) : map['o_id'];
     date = DateTime.parse(map['date']);
     term = map['term'] is String ? int.parse(map['term']) : map['term'];

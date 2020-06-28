@@ -6,10 +6,10 @@ import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
 import 'package:nexus_mobile_app/ui/pages/main/UpdatesPage.dart';
 
-class NUpdateTile extends StatelessWidget {
+class UpdateTile extends StatelessWidget {
   final Update update;
 
-  NUpdateTile({@required this.update});
+  UpdateTile({@required this.update});
   EdgeInsets textInsets = EdgeInsets.only(top: 4, bottom: 4);
 
   UserProvider userProvider;

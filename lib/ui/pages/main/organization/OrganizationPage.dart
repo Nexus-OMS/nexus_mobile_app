@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
-import 'package:nexus_mobile_app/ui/components/NSearchIconButton.dart';
+import 'package:nexus_mobile_app/ui/components/SearchButton.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/MemberPage.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/PositionPage.dart';
 
 class OrganizationPage extends StatefulWidget {
@@ -34,7 +35,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
               floating: false,
               expandedHeight: 100.0,
               actions: <Widget>[
-                NSearchIconButton(),
+                SearchButton(),
               ],
               elevation: 0,
               backgroundColor: Colors.white,
@@ -55,7 +56,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
     if (state.levels != null) {
       return Container(
         height: 100.0,
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        padding: EdgeInsets.symmetric(vertical: 10.0),
         child: ListView.builder(
           physics: BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
@@ -65,26 +66,16 @@ class _OrganizationPageState extends State<OrganizationPage> {
                 margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                 child: ActionChip(
                   label: Text(state.levels[index].name),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MemberPage(
+                            state.levels[index].name,
+                            'level=${state.levels[index].id}')));
+                  },
                 ));
           },
         ),
       );
-    } else {
-      return Container(child: Text("loading"));
-    }
-  }
-
-  Widget _buildUnitsRow(OrganizationStateHasData state) {
-    if (state.units != null) {
-      return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: List.generate(state.units.length, (index) {
-            return Container(
-                padding: EdgeInsets.all(16.0),
-                child: GestureDetector(
-                    onTap: () {}, child: Text(state.units[index].name)));
-          }));
     } else {
       return Container(child: Text("loading"));
     }
@@ -139,17 +130,8 @@ class _OrganizationPageState extends State<OrganizationPage> {
       );
     } else if (state is OrganizationStateHasData) {
       return SliverList(
-        delegate: SliverChildBuilderDelegate((context, index) {
-          switch (index) {
-            case 0:
-              return _buildLevelsRow(state);
-            case 1:
-              return _buildUnitsRow(state);
-            default:
-              return _buildPositionsRow(state);
-          }
-        }, childCount: 3),
-      );
+          delegate: SliverChildListDelegate(
+              [_buildLevelsRow(state), _buildPositionsRow(state)]));
     }
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {

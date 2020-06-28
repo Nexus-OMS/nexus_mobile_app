@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
+import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
+import 'package:nexus_mobile_app/bloc/user_bloc/user_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/providers/UserProvider.dart';
 import 'package:nexus_mobile_app/ui/components/ImageLoader.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 
@@ -22,47 +27,48 @@ class _ProfilePageState extends State<ProfilePage>
   UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
-    userProvider = Provider.of<UserProvider>(context);
-    int user_id = this.widget.user_id;
-    User user = userProvider.users.firstWhere((user) => user.id == user_id);
-    String image_uri;
-    if (user.image_uri != null) {
-      if (user.image_uri.contains('profile_placeholder')) {
-        image_uri = user.image_uri;
-      } else {
-        image_uri = '/api' + user.image_uri;
-      }
-    }
-
-    return new Scaffold(
-      body: new CustomScrollView(slivers: <Widget>[
-        new SliverAppBar(
-          pinned: true,
-          //snap: true,
-          floating: false,
-          expandedHeight: 330.0,
-          elevation: 0,
-          backgroundColor: Colors.white,
-          flexibleSpace: new FlexibleSpaceBar(
-            background: ImageLoader(route: image_uri),
-            title: Text(user.getFullName()),
-            centerTitle: true,
-            collapseMode: CollapseMode.parallax,
-          ),
-        ),
-        new SliverPersistentHeader(
-          delegate: new _ProfilePageHeaderDelegate(
-              collapsedHeight: 58, expandedHeight: 58, vsync: this, user: user),
-          pinned: true,
-        ),
-        new SliverList(
-            delegate: new SliverChildBuilderDelegate(
-                (context, index) => _getTile(context, user, index),
-                childCount: 3))
-      ]),
-      floatingActionButton: new FloatingActionButton(
-          onPressed: () async {}, child: new Icon(Icons.edit)),
-    );
+    OrganizationRepository rep =
+        BlocProvider.of<OrganizationBloc>(context).repository;
+    return Scaffold(
+        body: BlocProvider(
+            create: (BuildContext context) => UserBloc(rep, widget.user_id),
+            child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+              if (state is UserStateUninitialized) {
+                //loading
+                context.bloc<UserBloc>().add(UserEventRefresh(Completer()));
+              }
+              if (state is UserStateHasData) {
+                if (state.user != null) {
+                  return CustomScrollView(slivers: <Widget>[
+                    SliverAppBar(
+                      pinned: true,
+                      //snap: true,
+                      floating: false,
+                      expandedHeight: 330.0,
+                      elevation: 0,
+                      backgroundColor: Colors.white,
+                      flexibleSpace: new FlexibleSpaceBar(
+                        background: ImageLoader(route: state.user.image_uri),
+                        title: Text(state.user.getFullName()),
+                        centerTitle: true,
+                        collapseMode: CollapseMode.parallax,
+                      ),
+                    ),
+                    new SliverPersistentHeader(
+                      delegate: new _ProfilePageHeaderDelegate(
+                          collapsedHeight: 58,
+                          expandedHeight: 58,
+                          vsync: this,
+                          user: state.user),
+                      pinned: true,
+                    ),
+                  ]);
+                } else {
+                  Center(child: CircularProgressIndicator());
+                }
+              }
+              return Center(child: Text("ERROR"));
+            })));
   }
 
   _getTile(BuildContext context, User user, int index) {

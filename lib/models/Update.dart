@@ -1,4 +1,6 @@
-class Update {
+import 'package:nexus_mobile_app/models/APIModel.dart';
+
+class Update extends APIModel {
   int id;
 
   //String image_uri;
@@ -11,7 +13,7 @@ class Update {
 
   Update();
 
-  Update.fromMap(Map map){
+  Update.fromMap(Map map) {
     id = map['o_id'];
     update_title = map['update_title'];
     update_text = (map['update_text'] as String);

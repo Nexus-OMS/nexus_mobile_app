@@ -7,7 +7,12 @@ class MemberList extends StatelessWidget {
   MemberList(this.users);
   @override
   Widget build(BuildContext context) {
-    if (this.users == null || this.users.length == 0) {
+    if (this.users == null) {
+      return SliverList(
+        delegate: SliverChildListDelegate(
+            [Center(child: CircularProgressIndicator())]),
+      );
+    } else if (this.users.length == 0) {
       return SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
         return Container(

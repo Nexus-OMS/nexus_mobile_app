@@ -20,7 +20,11 @@ class OrganizationRepository {
     return (obj == null || obj.length == 0);
   }
 
-  Future<List<User>> pageUsers({String query}) async {
+  Future<List<User>> pageUsers({String query, bool refresh}) async {
+    if (refresh ?? false) {
+      this.userPager = new PaginateService(route: APIRoutes.routes[User]);
+      users = List();
+    }
     var raw_values = query != null
         ? await userPager.page(query: query)
         : await userPager.page();

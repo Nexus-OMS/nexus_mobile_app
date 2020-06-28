@@ -1,4 +1,6 @@
-class Position {
+import 'package:nexus_mobile_app/models/APIModel.dart';
+
+class Position extends APIModel {
   int id;
   String name;
   String symbol;

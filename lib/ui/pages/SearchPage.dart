@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class SearchPage extends StatefulWidget {
+  Type type;
+  SearchPage(this.type);
   @override
   _SearchPageState createState() => _SearchPageState();
 }

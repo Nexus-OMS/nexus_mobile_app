@@ -80,10 +80,4 @@ class User extends APIModel {
     };
     return map;
   }
-
-  @override
-  APIModel get(int id) {
-    // TODO: implement get
-    return null;
-  }
 }

@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
+import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/ui/components/NSearchIconButton.dart';
+import 'package:nexus_mobile_app/ui/components/SearchButton.dart';
 import 'package:nexus_mobile_app/ui/components/NSliverIconButton.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NUpdateTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class UpdatePage extends StatelessWidget {
@@ -45,6 +47,8 @@ class UpdatePage extends StatelessWidget {
 class UpdatesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    OrganizationRepository rep =
+        BlocProvider.of<OrganizationBloc>(context).repository;
     return BlocBuilder<UpdateBloc, UpdateState>(builder: (context, state) {
       if (state is UpdateStateUninitialized)
         context.bloc<UpdateBloc>().add(UpdateEventPage());
@@ -60,7 +64,7 @@ class UpdatesPage extends StatelessWidget {
               floating: false,
               expandedHeight: 100.0,
               actions: <Widget>[
-                NSearchIconButton(),
+                SearchButton(),
               ],
               elevation: 0,
               backgroundColor: Colors.white,
@@ -103,7 +107,7 @@ class UpdatesPage extends StatelessWidget {
         delegate: SliverChildBuilderDelegate((context, index) {
           return Padding(
             padding: EdgeInsets.all(16.0),
-            child: NUpdateTile(update: state.updates[index]),
+            child: UpdateTile(update: state.updates[index]),
           );
         }, childCount: state.updates.length),
       );

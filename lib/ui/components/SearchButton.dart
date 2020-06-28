@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/ui/pages/SearchPage.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
-class NSearchIconButton extends StatefulWidget {
+class SearchButton extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _NSearchIconButtonState();
+  State<StatefulWidget> createState() => _SearchButtonState();
 }
 
-class _NSearchIconButtonState extends State<NSearchIconButton>
+class _SearchButtonState extends State<SearchButton>
     with TickerProviderStateMixin {
   Animation<double> _animation;
   AnimationController _controller;

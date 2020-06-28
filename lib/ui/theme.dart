@@ -98,6 +98,14 @@ class NexusTheme {
     return theme;
   }
 
+  static AppBarTheme _appBarTheme(BuildContext context) {
+    return Theme.of(context).appBarTheme.copyWith(
+        color: NexusTheme.background,
+        brightness: Brightness.light,
+        iconTheme:
+            Theme.of(context).iconTheme.copyWith(color: NexusTheme.textLight));
+  }
+
   ///
   /// THEME
   ///
@@ -116,6 +124,7 @@ class NexusTheme {
         inputDecorationTheme: _inputDecorationTheme,
         chipTheme: _chipTheme(context),
         textTheme: _textTheme(context),
+        appBarTheme: _appBarTheme(context),
         buttonTheme: _buttonTheme);
   }
 

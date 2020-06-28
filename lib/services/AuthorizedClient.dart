@@ -69,7 +69,7 @@ class AuthorizedClient {
           new NetworkImage(constants['BASE_URI'] + route, headers: headers);
       return new Image(
         image: net,
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
         alignment: Alignment(0, -1),
       );
     } catch (error) {
