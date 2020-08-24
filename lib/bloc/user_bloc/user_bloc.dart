@@ -13,10 +13,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   int user_id;
   OrganizationRepository repository;
 
-  UserBloc(this.repository, this.user_id);
-
-  @override
-  UserState get initialState => UserStateUninitialized();
+  UserBloc(this.repository, this.user_id) : super(UserStateUninitialized());
 
   @override
   Stream<UserState> mapEventToState(

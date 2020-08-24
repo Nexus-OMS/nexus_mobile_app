@@ -14,10 +14,8 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
 
   OrganizationBloc({@required OrganizationRepository repository})
       : assert(repository != null),
-        repository = repository;
-
-  @override
-  OrganizationState get initialState => OrganizationStateUninitialized();
+        repository = repository,
+        super(OrganizationStateUninitialized());
 
   @override
   Stream<OrganizationState> mapEventToState(

@@ -4,42 +4,29 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nexus_mobile_app/models/APIModel.dart';
-import 'package:nexus_mobile_app/services/APIRoutes.dart';
-import 'package:nexus_mobile_app/services/PaginateService.dart';
+import 'package:nexus_mobile_app/models/models.dart';
+import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  PaginateService pager;
-
-  SearchBloc(this.pager);
-
-  @override
-  SearchState get initialState => SearchStateUninitialized();
+  SearchBloc() : super(SearchStateUninitialized());
 
   @override
   Stream<SearchState> mapEventToState(
     SearchEvent event,
   ) async* {
     if (event is SearchEventRefresh) {
-      yield* _mapRefreshAPIModeloState(event.completer, event.query);
-    } else if (event is SearchEventPage) {
-      yield* _mapPageAPIModeloState(event.query);
+      yield* _mapRefreshToState(event.query);
     }
   }
 
-  Stream<SearchState> _mapRefreshAPIModeloState(
-      Completer completer, String query) async* {
+  Stream<SearchState> _mapRefreshToState(String query) async* {
     try {
-      List results;
-      if (state is SearchStateHasData) {
-        results = (state as SearchStateHasData).results;
-      }
-      yield SearchStateLoading(results);
-      results = await this.pageAPIModel(query: query, refresh: true);
-      completer.complete();
-      yield SearchStateHasData(results);
+      yield SearchStateLoading();
+      var results = await this.search(query: query);
+      yield SearchStateHasData(results[0], results[1]);
     } catch (err, stacktrace) {
       print(err);
       print(stacktrace);
@@ -47,35 +34,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 
-  Stream<SearchState> _mapPageAPIModeloState(String query) async* {
-    try {
-      List results;
-      if (state is SearchStateHasData) {
-        results = (state as SearchStateHasData).results;
-      }
-      yield SearchStateLoading(results);
-      results = await this.pageAPIModel(query: query);
-      yield SearchStateHasData(results);
-    } catch (err, stacktrace) {
-      print(err);
-      print(stacktrace);
-      yield SearchStateError();
-    }
-  }
-
-  Future<List> pageAPIModel({String query, bool refresh, List results}) async {
-    if (refresh ?? false) {
-      this.pager = new PaginateService(route: APIRoutes.routes[APIModel]);
-      results = List();
-    }
-    if (results == null) results = List();
+  Future<List<List<APIModel>>> search({String query}) async {
     var raw_values =
-        query != null ? await pager.page(query: query) : await pager.page();
-    for (var item in raw_values) {
-      APIModel model = APIModel.fromMap(item);
-      results.removeWhere((sitem) => sitem.id == model.id);
-      results.add(model);
+        await AuthorizedClient.get(route: '/api/v1/search?query=$query');
+    List<User> users = List();
+    List<Update> updates = List();
+    for (var item in raw_values['users']) {
+      User model = User.fromMap(item);
+      users.add(model);
     }
-    return results;
+    for (var item in raw_values['updates']) {
+      Update model = Update.fromMap(item);
+      updates.add(model);
+    }
+    return [users, updates];
   }
 }

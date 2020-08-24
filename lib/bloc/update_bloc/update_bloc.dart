@@ -14,10 +14,8 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
 
   UpdateBloc({@required UpdateRepository repository})
       : assert(repository != null),
-        _repository = repository;
-
-  @override
-  UpdateState get initialState => UpdateStateUninitialized();
+        _repository = repository,
+        super(UpdateStateUninitialized());
 
   @override
   Stream<UpdateState> mapEventToState(

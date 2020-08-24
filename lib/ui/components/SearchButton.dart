@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/pages/SearchPage.dart';
+import 'package:nexus_mobile_app/models/User.dart';
+import 'package:nexus_mobile_app/ui/pages/search/SearchPage.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
-class SearchButton extends StatefulWidget {
+class SearchButton<T> extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SearchButtonState();
+  State<StatefulWidget> createState() => _SearchButtonState<T>();
 }
 
-class _SearchButtonState extends State<SearchButton>
+class _SearchButtonState<T> extends State<SearchButton>
     with TickerProviderStateMixin {
   Animation<double> _animation;
   AnimationController _controller;

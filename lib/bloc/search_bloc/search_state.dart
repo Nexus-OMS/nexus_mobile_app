@@ -10,16 +10,16 @@ class SearchStateUninitialized extends SearchState {
   List<Object> get props => ['SearchStateUninitialized'];
 }
 
-class SearchStateLoading extends SearchStateHasData {
-  SearchStateLoading(results) : super(results);
+class SearchStateLoading extends SearchState {
   @override
-  List<Object> get props => ['SearchStateLoading', results];
+  List<Object> get props => ['SearchStateLoading'];
 }
 
 class SearchStateHasData extends SearchState {
-  final List results;
-  SearchStateHasData(this.results);
-  List<Object> get props => ['SearchStateHasData', results];
+  final List<User> users;
+  final List<Update> updates;
+  SearchStateHasData(this.users, this.updates);
+  List<Object> get props => ['SearchStateHasData', users, updates];
 }
 
 class SearchStateError extends SearchState {

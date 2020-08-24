@@ -12,7 +12,7 @@ part 'users_state.dart';
 class UsersBloc extends Bloc<UsersEvent, UsersState> {
   OrganizationRepository repository;
 
-  UsersBloc(this.repository);
+  UsersBloc(this.repository) : super(UsersStateUninitialized());
 
   @override
   UsersState get initialState => UsersStateUninitialized();
