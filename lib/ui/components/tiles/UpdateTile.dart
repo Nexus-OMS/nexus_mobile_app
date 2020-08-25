@@ -34,7 +34,10 @@ class UpdateTile extends StatelessWidget {
                           padding: textInsets,
                           child: new Text(
                             update.update_title,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                .copyWith(fontSize: 22),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),

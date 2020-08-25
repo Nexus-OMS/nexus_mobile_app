@@ -1,4 +1,6 @@
-class EventType {
+import 'model.dart';
+
+class EventType extends Model {
   int id;
   String name;
 

@@ -38,10 +38,12 @@ class AuthenticationRepository {
     } catch (err) {
       return null;
     }
+    this.isAuthenticated = true;
     return this.user;
   }
 
   Future signOut() async {
+    this.isAuthenticated = false;
     await AuthorizedClient.deauthorize();
   }
 }

@@ -4,7 +4,6 @@ import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/models/Position.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/MemberList.dart';
-import 'package:nexus_mobile_app/ui/theme.dart';
 
 class PositionPage extends StatefulWidget {
   final Position position;
@@ -29,57 +28,47 @@ class _PositionPageState extends State<PositionPage> {
     }
     return Scaffold(
         body: SafeArea(
-            child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16),
-                child: CustomScrollView(slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    expandedHeight: 100.0,
-                    iconTheme: Theme.of(context)
-                        .iconTheme
-                        .copyWith(color: NexusTheme.dark),
-                    elevation: 0,
-                    backgroundColor: Colors.white,
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Text(
-                        widget.position.name,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      collapseMode: CollapseMode.parallax,
-                    ),
-                  ),
-                  MemberList(members),
-                  SliverList(
-                      delegate: SliverChildListDelegate(
-                    [
-                      Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Divider(color: Colors.black26)),
-                    ],
-                  )),
-                  _buildSubordinates(widget.position.children)
-                ]))));
+            child: CustomScrollView(slivers: <Widget>[
+      SliverAppBar(
+          pinned: true,
+          floating: false,
+          elevation: 0,
+          title: Text(
+            widget.position.name,
+          )),
+      MemberList(members),
+      SliverList(
+          delegate: SliverChildListDelegate(
+        [
+          Padding(
+              padding: EdgeInsets.only(right: 8, left: 8), child: Divider()),
+        ],
+      )),
+      _buildSubordinates(widget.position.children)
+    ])));
   }
 
   Widget _buildSubordinates(List<Position> positions) {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
       (BuildContext context, int index) {
-        return GestureDetector(
-            child: Container(
-                padding: EdgeInsets.only(
-                    left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
+        return Container(
+          padding: EdgeInsets.all(8.0),
+          child: Padding(
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
+            child: OutlineButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(8.0)),
+                padding: EdgeInsets.all(8.0),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PositionPage(positions[index])));
+                },
                 child: Row(
                   children: <Widget>[
                     Flexible(
-                        child: Padding(
-                      padding: EdgeInsets.only(left: 16.0, right: 16.0),
                       child: Padding(
-                          padding: EdgeInsets.all(12.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -94,13 +83,11 @@ class _PositionPageState extends State<PositionPage> {
                                 ),
                                 Icon(Icons.chevron_right)
                               ])),
-                    ))
+                    )
                   ],
                 )),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PositionPage(positions[index])));
-            });
+          ),
+        );
       },
       childCount: positions.length,
     ));

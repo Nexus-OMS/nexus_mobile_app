@@ -45,7 +45,7 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(canvasColor: NexusTheme.primary),
           child: BottomNavigationBar(
-            backgroundColor: NexusTheme.primary,
+            type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                   icon: Icon(OMIcons.home), title: Text('Home')),
@@ -58,9 +58,6 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
                   icon: Icon(OMIcons.allInbox), title: Text('Updates')),
             ],
             currentIndex: _selectedIndex,
-            iconSize: 24.0,
-            selectedItemColor: NexusTheme.textLight,
-            unselectedItemColor: NexusTheme.textLight.withOpacity(0.7),
             onTap: _onItemTapped,
           ),
         ));

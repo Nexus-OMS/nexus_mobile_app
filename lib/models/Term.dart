@@ -1,5 +1,6 @@
+import 'model.dart';
 
-class Term {
+class Term extends Model {
   int term;
   String name;
 
@@ -10,16 +11,13 @@ class Term {
     return 'Term{term: $term, name: $name}';
   }
 
-  Term.fromMap(Map<dynamic, dynamic> map){
+  Term.fromMap(Map<dynamic, dynamic> map) {
     term = map['term'];
     name = map['name'];
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
-      'term': term,
-      'name': name
-    };
+    Map<String, dynamic> map = {'term': term, 'name': name};
     return map;
   }
 }

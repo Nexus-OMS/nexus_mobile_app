@@ -15,7 +15,7 @@ class ImageLoader extends StatefulWidget {
 class _ImageLoaderState extends State<ImageLoader> {
   @override
   void initState() {
-    AuthorizedClient.GetConstants().then((constants) {
+    AuthorizedClient.getConstants().then((constants) {
       setState(() {
         widget.constants = constants;
       });

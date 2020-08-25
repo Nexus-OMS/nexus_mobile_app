@@ -6,11 +6,15 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/enum/TaskStatus.dart';
 import 'package:http/http.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthorizedClient {
   //Constants
   static String TOKEN_KEY = "NEXUS_ACCESS_TOKEN";
   static String USERNAME_KEY = "NEXUS_USERNAME";
+  static String DOMAIN_KEY = "NEXUS_DOMAIN";
+  static String CLIENT_ID_KEY = "NEXUS_CLIENT_ID";
+  static String CLIENT_SECRET_KEY = "NEXUS_CLIENT_SECRET";
 
   static StreamController authDoneController = new StreamController.broadcast();
 
@@ -19,13 +23,38 @@ class AuthorizedClient {
   static Future<TaskStatus> deauthorize() async {
     await deleteAccessToken();
     await deleteUsername();
+    await _getSecureStorage().delete(key: CLIENT_ID_KEY);
+    await _getSecureStorage().delete(key: CLIENT_SECRET_KEY);
     return TaskStatus.SUCCESS;
+  }
+
+  static Future<String> getDomain() async {
+    return await _getSecureStorage().read(key: DOMAIN_KEY);
+  }
+
+  static Future<void> setDomain(_domain) async {
+    await _getSecureStorage().write(key: DOMAIN_KEY, value: _domain);
+  }
+
+  static Future<void> setClient(String id, String secret) async {
+    await _getSecureStorage().write(key: CLIENT_ID_KEY, value: id);
+    await _getSecureStorage().write(key: CLIENT_SECRET_KEY, value: secret);
+  }
+
+  static Future<void> openSignIn() async {
+    final domain = await getDomain();
+    final url = 'https://$domain/mobile/login';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   static Future<TaskStatus> authenticate(
       {String username, String password}) async {
     Client client = new Client();
-    var cst = await GetConstants(username);
+    var cst = await getConstants(username);
     debugPrint(' - Authentication Request - ');
     debugPrint('\tBase URI: ' + cst['BASE_URI']);
 
@@ -121,7 +150,7 @@ class AuthorizedClient {
     Client client = new Client();
     String token = await retrieveAccessToken();
     if (token == null) return null;
-    var cst = await GetConstants();
+    var cst = await getConstants();
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: 'application/json',
       HttpHeaders.authorizationHeader: 'Bearer ' + token
@@ -141,7 +170,7 @@ class AuthorizedClient {
     print('got token');
     if (token == null) return null;
     print('tokennotnull');
-    var cst = await GetConstants();
+    var cst = await getConstants();
     print('gotconstants');
     Map<String, String> headers = {
       HttpHeaders.acceptHeader: 'application/json',
@@ -154,28 +183,23 @@ class AuthorizedClient {
     }).timeout(new Duration(seconds: 6));
   }
 
-  static Future<Map<String, String>> GetConstants([String username]) async {
-    Map<String, String> DevConstants = {
-      "BASE_URI": "http://localhost",
-      "CLIENT_ID": "2",
-      "CLIENT_SECRET": "EzMgk1aLbizKDxPU1W6KHUbZF9cmbPa99phxh9Qr",
+  static Future<Map<String, String>> getConstants([String username]) async {
+    final clientId = await _getSecureStorage().read(key: CLIENT_ID_KEY);
+    final secret = await _getSecureStorage().read(key: CLIENT_SECRET_KEY);
+    Map<String, String> headers = {
+      "BASE_URI": 'https://' + await getDomain(),
+      "CLIENT_ID": clientId,
+      "CLIENT_SECRET": secret,
       "GRANT_TYPE": "password",
       "SCOPE": ""
     };
-    Map<String, String> ProdConstants = {
-      "BASE_URI": "",
-      "CLIENT_ID": "",
-      "CLIENT_SECRET": "",
-      "GRANT_TYPE": "password",
-      "SCOPE": ""
+    return headers;
+  }
+
+  static Future<Map<String, String>> getHeaders() async {
+    return {
+      HttpHeaders.authorizationHeader: 'Bearer ' + await retrieveAccessToken()
     };
-    if (username == null) {
-      username = await retrieveUsername();
-    }
-    if (username.contains("dev", 2)) {
-      return DevConstants;
-    }
-    return ProdConstants;
   }
 
   static Future<bool> checkConnection() async {

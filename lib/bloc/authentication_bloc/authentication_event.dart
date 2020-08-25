@@ -10,6 +10,11 @@ class AuthenticationEventAppStarted extends AuthenticationEvent {
   List<Object> get props => ['AppStarted'];
 }
 
+class AuthenticationEventReceivedClient extends AuthenticationEvent {
+  @override
+  List<Object> get props => ['AppStarted'];
+}
+
 class AuthenticationEventSignInCredentials extends AuthenticationEvent {
   final String username;
   final String password;

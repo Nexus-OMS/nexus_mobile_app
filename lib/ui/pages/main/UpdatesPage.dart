@@ -7,10 +7,10 @@ import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/ui/components/SearchButton.dart';
-import 'package:nexus_mobile_app/ui/components/NSliverIconButton.dart';
+import 'package:nexus_mobile_app/ui/components/save_area_header.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:nexus_mobile_app/ui/pages/search/search_bar.dart';
 
 class UpdatePage extends StatelessWidget {
   final Update update;
@@ -44,7 +44,13 @@ class UpdatePage extends StatelessWidget {
   }
 }
 
-class UpdatesPage extends StatelessWidget {
+class UpdatesPage extends StatefulWidget {
+  @override
+  _UpdatesPageState createState() => _UpdatesPageState();
+}
+
+class _UpdatesPageState extends State<UpdatesPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     OrganizationRepository rep =
@@ -52,32 +58,20 @@ class UpdatesPage extends StatelessWidget {
     return BlocBuilder<UpdateBloc, UpdateState>(builder: (context, state) {
       if (state is UpdateStateUninitialized)
         context.bloc<UpdateBloc>().add(UpdateEventPage());
-      return RefreshIndicator(
-          onRefresh: () {
-            Completer completer = new Completer();
-            context.bloc<UpdateBloc>().add(UpdateEventRefresh(completer));
-            return completer.future;
-          },
-          child: CustomScrollView(slivers: <Widget>[
-            SliverAppBar(
-              pinned: true,
-              floating: false,
-              expandedHeight: 100.0,
-              actions: <Widget>[
-                SearchButton(),
-              ],
-              elevation: 0,
-              backgroundColor: Colors.white,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'Updates',
-                  style: TextStyle(color: Colors.black),
+      return SafeArea(
+          child: RefreshIndicator(
+              onRefresh: () {
+                Completer completer = new Completer();
+                context.bloc<UpdateBloc>().add(UpdateEventRefresh(completer));
+                return completer.future;
+              },
+              child: CustomScrollView(slivers: <Widget>[
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _SearchBarHeaderDelegate(),
                 ),
-                collapseMode: CollapseMode.parallax,
-              ),
-            ),
-            buildList(state)
-          ]));
+                buildList(state)
+              ])));
     });
   }
 
@@ -114,7 +108,40 @@ class UpdatesPage extends StatelessWidget {
     }
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-      return Text("loading");
-    }, childCount: 1));
+      return SkeletonTile(
+        height: 64,
+      );
+    }, childCount: 10));
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+}
+
+class _SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SearchBar(
+          floating: true,
+          searchReturn: () {},
+        )
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => 160;
+
+  @override
+  double get minExtent => 86;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

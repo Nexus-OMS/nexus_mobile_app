@@ -54,11 +54,9 @@ class _MemberPageState extends State<MemberPage> {
                       SearchButton(),
                     ],
                     elevation: 0,
-                    backgroundColor: Colors.white,
                     flexibleSpace: FlexibleSpaceBar(
                       title: Text(
                         widget.title,
-                        style: TextStyle(color: Colors.black),
                       ),
                       collapseMode: CollapseMode.parallax,
                     ),

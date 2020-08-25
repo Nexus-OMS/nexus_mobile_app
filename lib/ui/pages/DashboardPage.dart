@@ -1,214 +1,297 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:nexus_mobile_app/models/Announcement.dart';
+import 'package:nexus_mobile_app/services/APIRoutes.dart';
+import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
+import 'package:nexus_mobile_app/ui/components/save_area_header.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
+import 'package:nexus_mobile_app/ui/typography.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/theme.dart';
+class DashboardPage extends StatefulWidget {
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
 
-class DashboardPage extends StatelessWidget {
-  final List<Map> collections = [
-    {"title": "Food joint", "image": "assets/icon/icon_transparent.png"},
-    {"title": "Photos", "image": "assets/icon/icon_transparent.png"},
-    {"title": "Travel", "image": "assets/icon/icon_transparent.png"},
-    {"title": "Nepal", "image": "assets/icon/icon_transparent.png"},
+enum _AnnouncementsState { uninitialized, hasData }
+
+class _DashboardPageState extends State<DashboardPage>
+    with AutomaticKeepAliveClientMixin {
+  _AnnouncementsState _announcementsState = _AnnouncementsState.uninitialized;
+  List<Announcement> announcements = List();
+  EdgeInsets _insets = EdgeInsets.all(12);
+  List<dynamic> documents = [
+    {'title': 'Operations Order', 'name': 'ops-order'},
+    {'title': 'Operations Order', 'name': 'ops-order'},
+    {'title': 'Organization Chart', 'name': 'org-chart'},
+    {'title': 'Organization Chart', 'name': 'org-chart'}
   ];
+
+  Future<void> _getAnnouncements() async {
+    setState(() {
+      _announcementsState = _AnnouncementsState.uninitialized;
+      announcements = List();
+    });
+    var raw_announcements =
+        await AuthorizedClient.get(route: APIRoutes.routes[Announcement]);
+    setState(() {
+      for (var item in raw_announcements) {
+        if (!item['title'].contains('COW')) {
+          announcements.add(Announcement.fromMap(item));
+        }
+      }
+      _announcementsState = _AnnouncementsState.hasData;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAnnouncements();
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      documents = List();
+    });
+    await _getAnnouncements();
+    setState(() {
+      documents = [
+        {'title': 'Operations Order', 'name': 'ops-order'},
+        {'title': 'Organization Chart', 'name': 'org-chart'}
+      ];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            height: 200.0,
-            decoration: BoxDecoration(
-              color: NexusTheme.primary,
-            ),
+        body: SafeArea(
+            child: RefreshIndicator(
+      onRefresh: _refreshData,
+      child: CustomScrollView(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _DashboardHeaderDelegate(),
           ),
-          ListView.builder(
-            itemCount: 7,
-            itemBuilder: _mainListBuilder,
+          SliverPersistentHeader(
+            delegate: _AnnouncementsHeaderDelegate(),
           ),
+          _announcementsBuilder(context),
+          SliverPersistentHeader(
+            delegate: _DocumentsHeaderDelegate(),
+          ),
+          _documentsBuilder(context)
         ],
       ),
-    );
+    )));
   }
 
-  Widget _mainListBuilder(BuildContext context, int index) {
-    if (index == 0) return _buildHeader(context);
-    if (index == 1) return _buildSectionHeader(context);
-    if (index == 2) return _buildCollectionsRow();
-    if (index == 3)
-      return Container(
-          color: Colors.white,
-          padding: EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0),
-          child: Text("Most liked posts",
-              style: Theme.of(context).textTheme.title));
-    return _buildListItem();
+  Widget _announcementsBuilder(context) {
+    List<Widget> children = List();
+    if (_announcementsState == _AnnouncementsState.uninitialized) {
+      for (var idx in List(4)) {
+        children.add(SkeletonTile(height: 24));
+      }
+    } else {
+      for (var ann in announcements) {
+        children.add(_announcementListBuilder(context, ann));
+      }
+    }
+    return SliverList(delegate: SliverChildListDelegate(children));
   }
 
-  Widget _buildListItem() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child:
-            Image.asset('assets/icon/icon_transparent.png', fit: BoxFit.cover),
-      ),
-    );
+  Widget _announcementListBuilder(context, Announcement announcement) {
+    if (_announcementsState == _AnnouncementsState.uninitialized) {
+      return CircularProgressIndicator();
+    }
+    return Padding(
+        padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+        child: Card(
+            child: Padding(
+                padding: _insets,
+                child: Subtitle(announcement.title.replaceAll('_', ' ') +
+                    ': ' +
+                    announcement.text))));
   }
 
-  Container _buildSectionHeader(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            "Collection",
-            style: Theme.of(context).textTheme.title,
-          ),
-          FlatButton(
-            onPressed: () {},
-            child: Text(
-              "Create new",
-              style: TextStyle(color: Colors.blue),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Container _buildCollectionsRow() {
-    return Container(
-      color: Colors.white,
-      height: 200.0,
-      padding: EdgeInsets.symmetric(horizontal: 10.0),
-      child: ListView.builder(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: collections.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-              width: 150.0,
-              height: 200.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5.0),
-                          child: Image.asset(collections[index]['image'],
-                              fit: BoxFit.cover))),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Text(collections[index]['title'],
-                      style: Theme.of(context)
-                          .textTheme
-                          .subhead
-                          .merge(TextStyle(color: Colors.grey.shade600)))
-                ],
-              ));
+  Widget _documentsBuilder(context) {
+    List<Widget> children = List();
+    for (var doc in documents) {
+      children.add(Builder(
+        builder: (context) {
+          return DocumentTile(doc['title'], doc['name']);
         },
-      ),
-    );
+      ));
+    }
+    return SliverList(delegate: SliverChildListDelegate(children));
   }
 
-  Container _buildHeader(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 50.0),
-      height: 240.0,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(
-                top: 40.0, left: 40.0, right: 40.0, bottom: 10.0),
-            child: Material(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              elevation: 5.0,
-              color: Colors.white,
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  Text(
-                    "Mebina Nepal",
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Text("UI/UX designer | Foodie | Kathmandu"),
-                  SizedBox(
-                    height: 16.0,
-                  ),
-                  Container(
-                    height: 40.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              "302",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text("Posts".toUpperCase(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              "10.3K",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text("Followers".toUpperCase(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              "120",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text("Following".toUpperCase(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 12.0)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Row(
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+}
+
+class _AnnouncementsHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+        child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Material(
-                elevation: 5.0,
-                shape: CircleBorder(),
-                child: CircleAvatar(
-                  radius: 40.0,
-                  backgroundImage:
-                      AssetImage('assets/icon/icon_transparent.png'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+            children: [TextTitle('Announcements')]));
+  }
+
+  @override
+  double get maxExtent => 64;
+
+  @override
+  double get minExtent => 64;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+
+class _DocumentsHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [TextTitle('Documents')]));
+  }
+
+  @override
+  double get maxExtent => 64;
+
+  @override
+  double get minExtent => 64;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+
+class DocumentTile extends StatefulWidget {
+  final String title;
+  final String name;
+  DocumentTile(this.title, this.name);
+  @override
+  _DocumentTileState createState() => _DocumentTileState();
+}
+
+enum _DocumentState { loading, error, data }
+
+class _DocumentTileState extends State<DocumentTile> {
+  String date;
+  _DocumentState _state = _DocumentState.loading;
+
+  @override
+  void initState() {
+    super.initState();
+    _getDate();
+  }
+
+  void _getDate() async {
+    try {
+      var raw = await AuthorizedClient.get(
+          route: '/api/v1/f/pdf/${widget.name}.pdf/metadata');
+      setState(() {
+        date = raw['last_modified'];
+        _state = _DocumentState.data;
+      });
+    } catch (e) {
+      setState(() {
+        _state = _DocumentState.error;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+        child: Card(
+            child: InkWell(
+                onTap: () async {
+                  final domain = await AuthorizedClient.getDomain();
+                  final url = 'https://$domain/api/v1/f/pdf/${widget.name}.pdf';
+                  if (await canLaunch(url)) {
+                    await launch(url,
+                        headers: await AuthorizedClient.getHeaders());
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                },
+                child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Headline(widget.title),
+                        Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: _state == _DocumentState.loading
+                                ? SkeletonTile(
+                                    width: 80,
+                                    height: 18,
+                                  )
+                                : (_state == _DocumentState.error
+                                    ? Subtitle('No File')
+                                    : Subtitle(date)))
+                      ],
+                    )))));
+  }
+}
+
+class _DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+            padding: EdgeInsets.all(18),
+            child: Row(
+              children: [
+                BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                    builder: (context, state) {
+                  final user = (state as AuthenticationStateAuthenticated).user;
+                  return ProfileAvatar(
+                      initials: user.getInitials(), route: user.image_uri);
+                }),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    //TODO Settings page
+                  },
+                )
+              ],
+            ))
+      ],
+    ));
+  }
+
+  @override
+  double get maxExtent => 140;
+
+  @override
+  double get minExtent => 90;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

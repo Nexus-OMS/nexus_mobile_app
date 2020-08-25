@@ -1,11 +1,13 @@
-class Announcement {
+import 'package:nexus_mobile_app/models/model.dart';
+
+class Announcement extends Model {
   int id;
   String title;
   String text;
 
   Announcement();
 
-  Announcement.fromMap(Map map){
+  Announcement.fromMap(Map map) {
     id = map['o_id'] is String ? int.parse(map['o_id']) : map['o_id'];
     title = map['title'];
     text = map['text'];

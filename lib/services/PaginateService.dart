@@ -18,10 +18,15 @@ class PaginateService<APIModel> {
     }
     var response = await AuthorizedClient.get(route: url);
     // Increase page numbers, return data
+    if (response is List) {
+      this.last_page = 1;
+      this.next_page = 1;
+      return response;
+    }
     this.last_page = response["last_page"];
     if (this.last_page < response["current_page"])
       this.next_page = response["current_page"]++;
 
-    return response["data"];
+    return response["data"] ?? response;
   }
 }

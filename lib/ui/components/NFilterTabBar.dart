@@ -14,11 +14,9 @@ class NFilterTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       padding: EdgeInsets.only(left: 16.0, right: 16.0),
-      color: Colors.white,
       child: new TabBar(
         tabs: tabs,
         isScrollable: true,
-        unselectedLabelColor: Colors.grey,
         indicator: new BubbleTabDecorator(),
         controller: controller,
       ),

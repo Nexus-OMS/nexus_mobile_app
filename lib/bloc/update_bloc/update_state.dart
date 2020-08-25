@@ -10,10 +10,10 @@ class UpdateStateUninitialized extends UpdateState {
   List<Object> get props => ['UpdateStateUninitialized'];
 }
 
-class UpdateStateLoading extends UpdateStateHasData {
-  UpdateStateLoading(updates) : super(updates);
+class UpdateStateLoading extends UpdateState {
+  UpdateStateLoading();
   @override
-  List<Object> get props => ['UpdateStateLoading', updates];
+  List<Object> get props => ['UpdateStateLoading'];
 }
 
 class UpdateStateHasData extends UpdateState {

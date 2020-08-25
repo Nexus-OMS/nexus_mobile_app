@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'dart:async';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
@@ -8,30 +9,35 @@ class AuthPage extends StatefulWidget {
   AuthPage({Key key}) : super(key: key);
 
   @override
-  _AuthPageState createState() => new _AuthPageState();
+  _AuthPageState createState() => _AuthPageState();
 }
 
 class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   BuildContext _scaffoldContext;
+  TextEditingController domainTextController = TextEditingController();
+
   TextEditingController usernameTextController = new TextEditingController();
   TextEditingController passwordTextController = new TextEditingController();
-  final formKey = new GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
   bool _isPressed = false;
-  bool _animatingReveal = false;
-  int _state = 0;
   double _width = 384.0;
   Animation _animation;
   double _animationValue = 0;
   GlobalKey _globalKey = GlobalKey();
+
+  FocusNode _domainFocus = FocusNode();
+
+  bool _autoValidateD = false;
+
+  AnimationController controller;
 
   FocusNode _unFocus = FocusNode();
   FocusNode _pwFocus = FocusNode();
 
   bool _autoValidateUN = false;
   bool _autoValidatePW = false;
-
-  AnimationController controller;
+  bool _nextBtnLoading = false;
 
   @override
   void initState() {
@@ -44,21 +50,25 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           _animationValue = _animation.value;
         });
       });
+    _checkDomain();
+  }
+
+  void _checkDomain() async {
+    final dom = await AuthorizedClient.getDomain();
+    domainTextController.text = dom ?? '';
   }
 
   @override
   Widget build(BuildContext mainContext) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-      return new Scaffold(
-        backgroundColor: Colors.white,
-        body: new Builder(builder: (BuildContext context) {
+      return Scaffold(
+        body: Builder(builder: (BuildContext context) {
           _scaffoldContext = context;
-          return new Container(
-              padding: new EdgeInsets.all(16.0),
-              width: 384,
-              child: new Center(
-                child: new Container(
+          return Container(
+              padding: EdgeInsets.all(16.0),
+              child: Center(
+                child: Container(
                   padding: EdgeInsets.all(24.0),
                   child: buildForm(state),
                 ),
@@ -91,14 +101,70 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   Widget buildForm(state) {
+    Widget child;
+    if (state is AuthenticationStateInitialized) {
+      child = buildAuthForm(state);
+    } else {
+      child = Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextFormField(
+                controller: domainTextController,
+                keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
+                autovalidate: _autoValidateD,
+                focusNode: _domainFocus,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (term) {
+                  setState(() {
+                    _autoValidateD = true;
+                  });
+                  _domainFocus.unfocus();
+                },
+                validator: (val) =>
+                    val.isEmpty ? 'Domain can\'t be empty.' : null,
+                decoration: InputDecoration(
+                  hintText: 'Domain (nexus.example.com)',
+                )),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Container(
+                key: _globalKey,
+                height: 48.0,
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  padding: EdgeInsets.all(8.0),
+                  onPressed: () async {
+                    setState(() {
+                      _nextBtnLoading = true;
+                    });
+                    await AuthorizedClient.setDomain(domainTextController.text);
+                    await AuthorizedClient.openSignIn();
+                    Future.delayed(const Duration(milliseconds: 1000), () {
+                      setState(() {
+                        _nextBtnLoading = false;
+                      });
+                    });
+                  },
+                  child: _nextBtnLoading
+                      ? CircularProgressIndicator()
+                      : Text('Next'),
+                )),
+          ),
+        ],
+      );
+    }
     return Form(
       key: formKey,
-      child: new Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Padding(
+          Padding(
             padding: const EdgeInsets.all(12.0),
             child: Hero(
               tag: 'app_icon',
@@ -109,120 +175,88 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          new Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: new TextFormField(
-                controller: usernameTextController,
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-                autovalidate: _autoValidateUN,
-                focusNode: _unFocus,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (term) {
-                  setState(() {
-                    _autoValidateUN = true;
-                  });
-                  _unFocus.unfocus();
-                  FocusScope.of(context).requestFocus(_pwFocus);
-                },
-                validator: (val) =>
-                    val.isEmpty ? 'Username can\'t be empty.' : null,
-                decoration: new InputDecoration(
-                  filled: true,
-                  hintText: 'Username',
-                  fillColor: NexusTheme.lightGrey,
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: NexusTheme.danger),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: NexusTheme.primary),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: NexusTheme.warning),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: NexusTheme.lightGrey),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                )),
-          ),
-          new Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: new TextFormField(
-              controller: passwordTextController,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              autovalidate: _autoValidatePW,
-              focusNode: _pwFocus,
-              onFieldSubmitted: (term) {
-                _pwFocus.unfocus();
-                setState(() {
-                  _isPressed = true;
-                  _autoValidatePW = true;
-                  onSubmit();
-                });
-              },
-              autocorrect: false,
-              validator: (val) =>
-                  val.isEmpty ? 'Password can\'t be empty.' : null,
-              obscureText: true,
-              decoration: new InputDecoration(
-                hintText: 'Password',
-                filled: true,
-                fillColor: NexusTheme.lightGrey,
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(16.0),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: NexusTheme.danger),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: NexusTheme.primary),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: NexusTheme.warning),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: NexusTheme.lightGrey),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-            ),
-          ),
-          new Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: new Container(
-              key: _globalKey,
-              height: 48.0,
-              width: _width - ((_width - 48.0) * _animationValue),
-              child: new RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.all(
-                          new Radius.circular(16.0 + (8 * _animationValue)))),
-                  padding: EdgeInsets.all(8.0),
-                  color: getColor(state),
-                  onPressed: () {},
-                  child: buildButtonChild(),
-                  onHighlightChanged: (isPressed) {
-                    setState(() {
-                      _isPressed = isPressed;
-                      if (state != AuthenticationStateAuthenticating ||
-                          state != AuthenticationStateAuthenticationError) {
-                        onSubmit();
-                      }
-                    });
-                  }),
-            ),
-          ),
+          child
         ],
       ),
+    );
+  }
+
+  Widget buildAuthForm(state) {
+    return Column(
+      children: [
+        new Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: new TextFormField(
+              controller: usernameTextController,
+              keyboardType: TextInputType.emailAddress,
+              autocorrect: false,
+              autovalidate: _autoValidateUN,
+              focusNode: _unFocus,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (term) {
+                setState(() {
+                  _autoValidateUN = true;
+                });
+                _unFocus.unfocus();
+                FocusScope.of(context).requestFocus(_pwFocus);
+              },
+              validator: (val) =>
+                  val.isEmpty ? 'Username can\'t be empty.' : null,
+              decoration: new InputDecoration(
+                hintText: 'Username',
+              )),
+        ),
+        new Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: new TextFormField(
+            controller: passwordTextController,
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.done,
+            autovalidate: _autoValidatePW,
+            focusNode: _pwFocus,
+            onFieldSubmitted: (term) {
+              _pwFocus.unfocus();
+              setState(() {
+                _isPressed = true;
+                _autoValidatePW = true;
+                onSubmit();
+              });
+            },
+            autocorrect: false,
+            validator: (val) =>
+                val.isEmpty ? 'Password can\'t be empty.' : null,
+            obscureText: true,
+            decoration: new InputDecoration(
+              hintText: 'Password',
+            ),
+          ),
+        ),
+        new Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: new Container(
+            key: _globalKey,
+            height: 48.0,
+            width: _width - ((_width - 48.0) * _animationValue),
+            child: new RaisedButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.all(
+                        new Radius.circular(16.0 + (8 * _animationValue)))),
+                padding: EdgeInsets.all(8.0),
+                color: getColor(state),
+                onPressed: () {},
+                child: buildButtonChild(),
+                onHighlightChanged: (isPressed) {
+                  setState(() {
+                    _isPressed = isPressed;
+                    if (state != AuthenticationStateAuthenticating ||
+                        state != AuthenticationStateAuthenticationError) {
+                      onSubmit();
+                    }
+                  });
+                }),
+          ),
+        )
+      ],
     );
   }
 
@@ -256,7 +290,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               value: null,
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white)));
     }
-    return new Text('Sign In',
-        style: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
+    return Text('Sign In',
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold));
   }
 }

@@ -1,56 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-
-import '../SkeletonText.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SkeletonTile extends StatelessWidget {
-  SkeletonTile();
+  double height;
+  double width;
+  EdgeInsets padding;
+  SkeletonTile(
+      {this.height = 30,
+      this.width = double.infinity,
+      this.padding = const EdgeInsets.all(12)});
 
   EdgeInsets textInsets = EdgeInsets.only(top: 4, bottom: 4);
 
   @override
   Widget build(BuildContext context) {
-    try {
-      return new GestureDetector(
-          child: new Container(
-              padding: EdgeInsets.all(16.0),
+    return Container(
+        padding: padding,
+        child: Shimmer.fromColors(
+          child: SizedBox(
+            height: height,
+            width: width,
+            child: Container(
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: new Border(
-                      bottom: BorderSide(
-                    color: Colors.black12,
-                    width: 1,
-                  ))),
-              child: new Row(
-                children: <Widget>[
-                  new SkeletonText(width: 40, height: 40),
-                  new Flexible(
-                    child: new Padding(
-                        padding: new EdgeInsets.only(left: 16.0, right: 16.0),
-                        child: new Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            new Padding(
-                              padding: textInsets,
-                              child: new SkeletonText(width: 200, height: 12),
-                            ),
-                            new Padding(
-                              padding: textInsets,
-                              child: new SkeletonText(width: 150, height: 8),
-                            ),
-                            new Padding(
-                              padding: textInsets,
-                              child: new SkeletonText(width: 150, height: 8),
-                            ),
-                          ],
-                        )),
-                  )
-                ],
-              )),
-          onTap: () {});
-    } catch (e) {
-      print(e);
-      return new NErrorTile(error_name: 'user');
-    }
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white.withAlpha(75)),
+            ),
+          ),
+          baseColor: Colors.grey.withAlpha(75),
+          highlightColor: Colors.white10.withAlpha(75),
+        ));
   }
 }

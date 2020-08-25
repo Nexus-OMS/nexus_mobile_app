@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 class ProfileAvatar extends StatefulWidget {
   String initials;
   String route;
-  String access_token;
-  Map<String, String> constants;
 
   ProfileAvatar({Key key, @required this.initials, @required this.route})
       : super(key: key);
@@ -14,26 +12,24 @@ class ProfileAvatar extends StatefulWidget {
 }
 
 class _ProfileAvatarState extends State<ProfileAvatar> {
+  String access_token;
+  Map<String, String> constants;
   @override
   void initState() {
-    AuthorizedClient.GetConstants().then((constants) {
-      setState(() {
-        widget.constants = constants;
-      });
-    });
+    asyncInit();
+  }
 
-    AuthorizedClient.retrieveAccessToken().then((token) {
-      setState(() {
-        widget.access_token = token;
-      });
-    });
+  void asyncInit() async {
+    constants = await AuthorizedClient.getConstants();
+    access_token = await AuthorizedClient.retrieveAccessToken();
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.route == null ||
-        widget.access_token == null ||
-        widget.constants == null) {
+    if (widget.route == null || access_token == null || constants == null) {
       return new CircleAvatar(
         backgroundColor: new Color(0xFFEEEEEE),
         child: new Text(widget.initials),
@@ -43,8 +39,8 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
     return CircleAvatar(
       backgroundImage: AuthorizedClient.getImageProvider(
           route: widget.route,
-          constants: widget.constants,
-          access_token: widget.access_token),
+          constants: constants,
+          access_token: access_token),
       radius: 24,
     );
   }

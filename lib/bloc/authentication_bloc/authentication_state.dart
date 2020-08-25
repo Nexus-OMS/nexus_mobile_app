@@ -10,6 +10,12 @@ class AuthenticationStateUninitialized extends AuthenticationState {
   List<Object> get props => ['AuthenticationStateUninitialized'];
 }
 
+class AuthenticationStateInitialized
+    extends AuthenticationStateUnauthenticated {
+  @override
+  List<Object> get props => ['AuthenticationStateUninitialized'];
+}
+
 class AuthenticationStateAuthenticated extends AuthenticationState {
   final User user;
 
@@ -19,18 +25,19 @@ class AuthenticationStateAuthenticated extends AuthenticationState {
   List<Object> get props => ["AuthenticationStateAuthenticated", user];
 }
 
-class AuthenticationStateAuthenticationError extends AuthenticationState {
+class AuthenticationStateAuthenticationError
+    extends AuthenticationStateInitialized {
   @override
   List<Object> get props => ['AuthenticationStateAuthenticationError'];
 }
 
 class AuthenticationStateAuthenticationErrorCleared
-    extends AuthenticationState {
+    extends AuthenticationStateInitialized {
   @override
   List<Object> get props => ['AuthenticationStateAuthenticationErrorCleared'];
 }
 
-class AuthenticationStateAuthenticating extends AuthenticationState {
+class AuthenticationStateAuthenticating extends AuthenticationStateInitialized {
   @override
   List<Object> get props => ['AuthenticationStateAuthenticating'];
 }

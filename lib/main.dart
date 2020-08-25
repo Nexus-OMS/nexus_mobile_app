@@ -61,7 +61,10 @@ class NexusApp extends StatelessWidget {
             )
           ],
           child: new MaterialApp(
-              title: 'Nexus', theme: NexusTheme.getTheme(context), home: App()),
+              title: 'Nexus',
+              theme: NexusTheme.light(context),
+              darkTheme: NexusTheme.dark(context),
+              home: App()),
         ));
   }
 }

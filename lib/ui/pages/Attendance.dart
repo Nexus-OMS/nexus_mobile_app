@@ -12,6 +12,7 @@ import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:intl/intl.dart';
+import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'dart:async';
@@ -125,11 +126,10 @@ class _AttendancePageState extends State<AttendancePage>
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Icon(Icons.refresh, color: Colors.grey),
+              new Icon(Icons.refresh),
               new Text('No Attendance Records',
-                  style: new TextStyle(fontSize: 16.0, color: Colors.grey)),
-              new Text('Tap to Reload',
-                  style: new TextStyle(fontSize: 12.0, color: Colors.grey)),
+                  style: new TextStyle(fontSize: 16.0)),
+              new Text('Tap to Reload', style: new TextStyle(fontSize: 12.0)),
             ],
           ),
           onTap: () async {
@@ -260,7 +260,7 @@ class _AttendancePageState extends State<AttendancePage>
           flushbarPosition: FlushbarPosition.TOP, //Immutable
           isDismissible: true,
           duration: Duration(seconds: 4),
-          backgroundColor: Colors.red,
+          backgroundColor: NexusTheme.danger,
           showProgressIndicator: false,
         )..show(context);
       });
@@ -283,9 +283,6 @@ class _AttendancePageState extends State<AttendancePage>
     attendanceProvider = Provider.of<AttendanceProvider>(context);
     attendanceTypeProvider = Provider.of<AttendanceTypeProvider>(context);
     termProvider = Provider.of<TermProvider>(context);
-
-    Color backgroundColor = Theme.of(context).cardColor;
-    Color foregroundColor = Theme.of(context).accentColor;
 
     return new Scaffold(
       appBar: new AppBar(

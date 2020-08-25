@@ -11,11 +11,10 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final AuthenticationRepository _repository;
+  final AuthenticationRepository repository;
 
-  AuthenticationBloc({@required AuthenticationRepository repository})
+  AuthenticationBloc({@required this.repository})
       : assert(repository != null),
-        _repository = repository,
         super(AuthenticationStateUninitialized());
 
   @override
@@ -26,6 +25,8 @@ class AuthenticationBloc
       yield* _mapAppStartedToState();
     } else if (event is AuthenticationEventSignOut) {
       yield* _mapLoggedOutToState();
+    } else if (event is AuthenticationEventReceivedClient) {
+      yield* _mapReceivedClientToState();
     } else if (event is AuthenticationEventSignInCredentials) {
       yield* _mapSignInCredentialsToState(event.username, event.password);
     } else if (event is AuthenticationEventClearError) {
@@ -37,7 +38,7 @@ class AuthenticationBloc
       String username, String password) async* {
     try {
       yield AuthenticationStateAuthenticating();
-      final user = await _repository.signIn(username, password);
+      final user = await repository.signIn(username, password);
       if (user != null) {
         yield AuthenticationStateAuthenticated(user);
       } else {
@@ -48,11 +49,15 @@ class AuthenticationBloc
     }
   }
 
+  Stream<AuthenticationState> _mapReceivedClientToState() async* {
+    yield AuthenticationStateInitialized();
+  }
+
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {
-      final isSignedIn = await _repository.init();
+      final isSignedIn = await repository.init();
       if (isSignedIn) {
-        final user = _repository.user;
+        final user = repository.user;
         yield AuthenticationStateAuthenticated(user);
       } else {
         yield AuthenticationStateUnauthenticated();
@@ -67,7 +72,7 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
-    await _repository.signOut();
+    await repository.signOut();
     yield AuthenticationStateUnauthenticated();
   }
 }

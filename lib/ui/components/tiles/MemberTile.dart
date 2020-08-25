@@ -19,9 +19,6 @@ class MemberTile extends StatelessWidget {
           child: new Container(
               padding: EdgeInsets.only(
                   left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
               child: new Row(
                 children: <Widget>[
                   new ProfileAvatar(
@@ -36,7 +33,10 @@ class MemberTile extends StatelessWidget {
                               padding: textInsets,
                               child: new Text(
                                 user.getFullName(),
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(fontSize: 22),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),

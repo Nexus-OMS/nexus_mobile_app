@@ -1,4 +1,6 @@
-class Unit {
+import 'model.dart';
+
+class Unit extends Model {
   int id;
   String name;
   String ad_group;

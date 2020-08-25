@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 
 class MemberList extends StatelessWidget {
   final List<User> users;
@@ -9,18 +10,13 @@ class MemberList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.users == null) {
       return SliverList(
-        delegate: SliverChildListDelegate(
-            [Center(child: CircularProgressIndicator())]),
+        delegate: SliverChildListDelegate([SkeletonTile(height: 38)]),
       );
     } else if (this.users.length == 0) {
       return SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
         return Container(
             padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                    bottom: BorderSide(color: Colors.black12, width: 1))),
             child: Container(
               padding: EdgeInsets.all(8.0),
               decoration: BoxDecoration(
@@ -42,7 +38,11 @@ class MemberList extends StatelessWidget {
     }
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-      return MemberTile(user: this.users[index]);
+      Widget widget = MemberTile(user: this.users[index]);
+      if (index == 0) {
+        widget = Padding(padding: EdgeInsets.only(top: 8), child: widget);
+      }
+      return widget;
     }, childCount: users.length));
   }
 }

@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/ui/pages/search/SearchPage.dart';
+import 'package:nexus_mobile_app/ui/pages/search/search_page.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class SearchButton<T> extends StatefulWidget {
@@ -15,14 +14,12 @@ class _SearchButtonState<T> extends State<SearchButton>
   Animation<double> _animation;
   AnimationController _controller;
   double _fraction = 0.0;
-  Color _color = NexusTheme.dark;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: SearchButtonPainter(_fraction, MediaQuery.of(context).size),
-      child: new IconButton(
-          icon: Icon(Icons.search), onPressed: reveal, color: _color),
+      child: new IconButton(icon: Icon(Icons.search), onPressed: reveal),
     );
   }
 
@@ -38,22 +35,17 @@ class _SearchButtonState<T> extends State<SearchButton>
   }
 
   Future reveal() async {
-    setState(() {
-      _color = Colors.white;
-    });
     _controller = AnimationController(
         duration: const Duration(milliseconds: 200), vsync: this);
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller)
       ..addListener(() {
         setState(() {
           _fraction = _animation.value;
-          if (_animation.value == 0.0) _color = NexusTheme.dark;
-          if (_animation.value == 0.1) _color = Colors.white;
         });
       });
 
     _controller.forward();
-    await Navigator.push(context, new SearchRoute(widget: new SearchPage()));
+    await Navigator.push(context, new SearchRoute(widget: SearchPage()));
     _controller.reverse();
   }
 }
