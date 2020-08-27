@@ -31,6 +31,19 @@ class AuthenticationBloc
       yield* _mapSignInCredentialsToState(event.username, event.password);
     } else if (event is AuthenticationEventClearError) {
       yield* _mapClearErrorToState();
+    } else if (event is AuthenticationEventRefresh) {
+      yield* _mapRefreshToState();
+    }
+  }
+
+  Stream<AuthenticationState> _mapRefreshToState() async* {
+    try {
+      final user = await repository.refresh();
+      if (user != null) {
+        yield AuthenticationStateAuthenticated(user);
+      }
+    } catch (_) {
+      yield AuthenticationStateUnauthenticated();
     }
   }
 

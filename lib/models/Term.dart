@@ -2,6 +2,7 @@ import 'model.dart';
 
 class Term extends Model {
   int term;
+  @override
   String name;
 
   Term();
@@ -17,7 +18,7 @@ class Term extends Model {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {'term': term, 'name': name};
+    var map = <String, dynamic>{'term': term, 'name': name};
     return map;
   }
 }

@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class SafeAreaHeader {
-  static sliver() {
+  static Widget sliver() {
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SafeHeaderDelegate(),

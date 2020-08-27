@@ -19,6 +19,7 @@ class UsersStateLoading extends UsersStateHasData {
 class UsersStateHasData extends UsersState {
   final List<User> users;
   UsersStateHasData(this.users);
+  @override
   List<Object> get props => ['UsersStateHasData', users];
 }
 

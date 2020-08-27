@@ -1,7 +1,9 @@
 import 'package:nexus_mobile_app/models/APIModel.dart';
 
 class Position extends APIModel {
+  @override
   int id;
+  @override
   String name;
   String symbol;
   int position_superior;
@@ -18,13 +20,14 @@ class Position extends APIModel {
     position_superior = map['position_superior'];
     ad_group = map['ad_group'];
     unit = map['unit'];
-    children = List<Position>();
-    if (map['children'] != null)
+    children = <Position>[];
+    if (map['children'] != null) {
       map['children'].forEach((ent) => children.add(Position.fromMap(ent)));
+    }
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
+    var map = <String, dynamic>{
       'o_id': id,
       'name': name,
       'symbol': symbol,

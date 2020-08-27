@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/search_repository.dart';
 import 'package:nexus_mobile_app/enum/SearchTypes.dart';
-import 'package:nexus_mobile_app/models/model.dart';
+import 'package:nexus_mobile_app/models/User.dart';
+import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
+import 'package:nexus_mobile_app/utils/debouncer.dart';
 
 import '../../theme.dart';
 
@@ -15,26 +18,28 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  SearchRepository repository = SearchRepository();
   TextEditingController _textFieldController;
+  final Debouncer onSearchDebouncer =
+      Debouncer(delay: Duration(milliseconds: 500));
   FocusNode _focusNode;
   TextStyle inputTextStyle;
   TextStyle hintTextStyle;
-  List<Widget> results;
   var hasText = false;
 
   @override
   void initState() {
     super.initState();
-    results = List();
     _textFieldController = TextEditingController();
     _textFieldController.addListener(() {
-      if (_textFieldController.text.length >= 3) {
-        setState(() {
-          results = buildResults(_textFieldController.text);
-        });
-      }
+      onSearchDebouncer.debounce(() {
+        if (_textFieldController.text.length >= 2) {
+          repository.search(_textFieldController.text, types: widget.filters);
+        }
+      });
     });
     _focusNode = FocusNode();
+    _focusNode.requestFocus();
   }
 
   @override
@@ -88,22 +93,21 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       SliverList(
-        delegate: SliverChildListDelegate(results),
+        delegate: SliverChildListDelegate(buildResults()),
       )
     ]));
   }
 
-  List<Widget> buildResults(String query) {
-    if (query.length < 3) {
-      return [Container()];
-    }
-    // List of widget sections (trips, places, friends)
-    List<Widget> sections = List();
+  List<Widget> buildResults() {
+    var sections = [];
     if (widget.filters != null) {
       for (var type in widget.filters) {
         switch (type) {
           case SearchTypes.users:
-            sections.add(getUsers(context, query));
+            sections.add(getUsers(context));
+            break;
+          case SearchTypes.updates:
+            sections.add(getUpdates(context));
             break;
           default:
         }
@@ -111,38 +115,91 @@ class _SearchPageState extends State<SearchPage> {
       return sections;
     }
     // If filters null return all
-    return [getUsers(context, query)];
+    return [getUsers(context), getUpdates(context)];
   }
-}
 
-Widget getUsers(BuildContext context, String query) {
-  return StreamBuilder(
-    stream: SearchRepository.search(query, types: [SearchTypes.users]),
-    builder: (context, AsyncSnapshot<List<Model>> snapshot) {
-      if (!snapshot.hasData) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(child: CircularProgressIndicator()),
-          ],
-        );
-      } else if (snapshot.data.isEmpty) {
-        return Column(
-          children: <Widget>[
-            Text(
-              "No Results Found.",
-            ),
-          ],
-        );
-      } else {
-        var results = snapshot.data;
-        return Column(
-          children: results.map((user) {
-            return MemberTile(user: user);
-          }).toList(),
-        );
-      }
-    },
-  );
+  Widget getUsers(BuildContext context) {
+    return StreamBuilder<List<User>>(
+      stream: repository.userStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Center(child: Text('Start typing to search...')),
+            ],
+          );
+        } else if (snapshot.data is List<User>) {
+          if (snapshot.data.isEmpty) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Center(
+              child: Text(
+                'No Results Found.',
+              ),
+            );
+          }
+          var results = snapshot.data;
+          return Column(
+            children: results.map((user) {
+              return MemberTile(
+                user: user,
+                onPressed: (_user) {
+                  Navigator.of(context).pop(_user);
+                },
+              );
+            }).toList(),
+          );
+        }
+        return Container();
+      },
+    );
+  }
+
+  Widget getUpdates(BuildContext context) {
+    return StreamBuilder<List<Update>>(
+      stream: repository.updateStream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Center(child: Text('Start typing to search...')),
+            ],
+          );
+        } else if (snapshot.data is List<Update>) {
+          if (snapshot.data.isEmpty) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Center(
+              child: Text(
+                'No Results Found.',
+              ),
+            );
+          }
+          var results = snapshot.data;
+          return Column(
+            children: results.map((update) {
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: UpdateTile(
+                      update: update,
+                      onPressed: (_update) {
+                        Navigator.of(context).pop(_update);
+                      }));
+            }).toList(),
+          );
+        }
+        return Container();
+      },
+    );
+  }
 }

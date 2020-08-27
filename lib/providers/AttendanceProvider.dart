@@ -8,14 +8,14 @@ import 'package:nexus_mobile_app/services/PaginateService.dart';
 
 class AttendanceProvider with ChangeNotifier {
   PaginateService pager;
-  List<Attendance> attendance = List();
+  List<Attendance> attendance = [];
 
   AttendanceProvider() {
-    this.pager = new PaginateService(route: APIRoutes.routes[Attendance]);
+    pager = PaginateService(route: APIRoutes.routes[Attendance]);
   }
 
   Future page() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_values = await pager.page();
     for (var item in raw_values) {
       attendance.removeWhere((sitem) => sitem.id == item.o_id);
@@ -32,7 +32,7 @@ class AttendanceProvider with ChangeNotifier {
   }
 
   Future all() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels =
         await AuthorizedClient.get(route: APIRoutes.routes[Attendance]);
     for (var item in raw_levels) {

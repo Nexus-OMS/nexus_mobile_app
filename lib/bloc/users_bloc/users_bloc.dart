@@ -15,9 +15,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   UsersBloc(this.repository) : super(UsersStateUninitialized());
 
   @override
-  UsersState get initialState => UsersStateUninitialized();
-
-  @override
   Stream<UsersState> mapEventToState(
     UsersEvent event,
   ) async* {

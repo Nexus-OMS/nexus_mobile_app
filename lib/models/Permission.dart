@@ -1,7 +1,9 @@
 import 'model.dart';
 
 class Permission extends Model {
+  @override
   int id;
+  @override
   String name;
 
   Permission();
@@ -12,7 +14,7 @@ class Permission extends Model {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {'o_id': id, 'name': name};
+    var map = <String, dynamic>{'o_id': id, 'name': name};
     return map;
   }
 }

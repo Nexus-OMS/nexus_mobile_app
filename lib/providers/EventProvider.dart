@@ -8,14 +8,14 @@ import 'package:nexus_mobile_app/services/PaginateService.dart';
 
 class EventProvider with ChangeNotifier {
   PaginateService pager;
-  List<Event> events = List();
+  List<Event> events = [];
 
   EventProvider() {
-    this.pager = new PaginateService(route: APIRoutes.routes[Event]);
+    pager = PaginateService(route: APIRoutes.routes[Event]);
   }
 
   Future page() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_values = await pager.page();
     for (var item in raw_values) {
       events.removeWhere((sitem) => sitem.id == item.o_id);
@@ -32,7 +32,7 @@ class EventProvider with ChangeNotifier {
   }
 
   Future all() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels = await AuthorizedClient.get(route: APIRoutes.routes[Event]);
     for (var item in raw_levels) {
       events.removeWhere((sitem) => sitem.id == item.o_id);

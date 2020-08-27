@@ -156,6 +156,10 @@ class NexusTheme {
         unselectedItemColor: dark ? textLight : textDark);
   }
 
+  static TabBarTheme _tabBarTheme(bool dark) {
+    return TabBarTheme(labelColor: dark ? textLight : textDark);
+  }
+
   ///
   /// THEME
   ///
@@ -163,6 +167,7 @@ class NexusTheme {
   static ThemeData light(BuildContext context) {
     return ThemeData(
         brightness: Brightness.light,
+        tabBarTheme: _tabBarTheme(false),
         appBarTheme: _appBarTheme(context, false),
         bottomAppBarTheme: _bottomAppBarTheme(context, false),
         primarySwatch: _materialColor,
@@ -183,6 +188,7 @@ class NexusTheme {
 
   static ThemeData dark(BuildContext context) {
     return ThemeData(
+        tabBarTheme: _tabBarTheme(true),
         brightness: Brightness.dark,
         appBarTheme: _appBarTheme(context, true),
         bottomAppBarTheme: _bottomAppBarTheme(context, true),
@@ -239,7 +245,7 @@ class NexusTheme {
   static const buttonDarkNormal = Color(0xff1e2845);
   static const buttonDarkDisabled = Color(0xff);
 
-  static const secondary = const Color(0xFF0c4767);
-  static const surface = const Color(0xFFeaebed);
-  static const warning = const Color(0xFFfe9920);
+  static const secondary = Color(0xFF0c4767);
+  static const surface = Color(0xFFeaebed);
+  static const warning = Color(0xFFfe9920);
 }

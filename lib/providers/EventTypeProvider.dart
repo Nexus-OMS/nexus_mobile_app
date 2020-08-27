@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 
 class EventTypeProvider with ChangeNotifier {
-  List<EventType> event_types = List();
+  List<EventType> event_types = [];
 
   EventTypeProvider();
 
@@ -18,7 +18,7 @@ class EventTypeProvider with ChangeNotifier {
   }
 
   Future all() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels =
         await AuthorizedClient.get(route: APIRoutes.routes[EventType]);
     for (var item in raw_levels) {

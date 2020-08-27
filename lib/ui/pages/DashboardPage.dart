@@ -1,13 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/models/Announcement.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
-import 'package:nexus_mobile_app/ui/components/save_area_header.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:nexus_mobile_app/ui/typography.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -20,19 +23,17 @@ enum _AnnouncementsState { uninitialized, hasData }
 class _DashboardPageState extends State<DashboardPage>
     with AutomaticKeepAliveClientMixin {
   _AnnouncementsState _announcementsState = _AnnouncementsState.uninitialized;
-  List<Announcement> announcements = List();
-  EdgeInsets _insets = EdgeInsets.all(12);
+  List<Announcement> announcements = [];
+  final EdgeInsets _insets = EdgeInsets.all(12);
   List<dynamic> documents = [
     {'title': 'Operations Order', 'name': 'ops-order'},
-    {'title': 'Operations Order', 'name': 'ops-order'},
-    {'title': 'Organization Chart', 'name': 'org-chart'},
     {'title': 'Organization Chart', 'name': 'org-chart'}
   ];
 
   Future<void> _getAnnouncements() async {
     setState(() {
       _announcementsState = _AnnouncementsState.uninitialized;
-      announcements = List();
+      announcements = [];
     });
     var raw_announcements =
         await AuthorizedClient.get(route: APIRoutes.routes[Announcement]);
@@ -53,8 +54,10 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Future<void> _refreshData() async {
+    BlocProvider.of<AuthenticationBloc>(context)
+        .add(AuthenticationEventRefresh());
     setState(() {
-      documents = List();
+      documents = [];
     });
     await _getAnnouncements();
     setState(() {
@@ -67,6 +70,7 @@ class _DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         body: SafeArea(
             child: RefreshIndicator(
@@ -91,9 +95,9 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Widget _announcementsBuilder(context) {
-    List<Widget> children = List();
+    var children = [];
     if (_announcementsState == _AnnouncementsState.uninitialized) {
-      for (var idx in List(4)) {
+      for (var _ in List(4)) {
         children.add(SkeletonTile(height: 24));
       }
     } else {
@@ -119,7 +123,7 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Widget _documentsBuilder(context) {
-    List<Widget> children = List();
+    var children = [];
     for (var doc in documents) {
       children.add(Builder(
         builder: (context) {
@@ -214,6 +218,11 @@ class _DocumentTileState extends State<DocumentTile> {
     }
   }
 
+  Future<String> _findLocalPath() async {
+    if (Platform.isAndroid) return '/storage/emulated/0';
+    return (await getApplicationDocumentsDirectory()).path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -223,6 +232,17 @@ class _DocumentTileState extends State<DocumentTile> {
                 onTap: () async {
                   final domain = await AuthorizedClient.getDomain();
                   final url = 'https://$domain/api/v1/f/pdf/${widget.name}.pdf';
+                  final path = (await _findLocalPath());
+                  final headers = await AuthorizedClient.getHeaders();
+                  await FlutterDownloader.enqueue(
+                    url: url,
+                    headers: headers,
+                    savedDir: path,
+                    showNotification:
+                        true, // show download progress in status bar (for Android)
+                    openFileFromNotification:
+                        true, // click on notification to open downloaded file (for Android)
+                  );
                   if (await canLaunch(url)) {
                     await launch(url,
                         headers: await AuthorizedClient.getHeaders());

@@ -22,10 +22,12 @@ class OrganizationStateHasData extends OrganizationState {
   final List<Level> levels;
   final Position positions;
   OrganizationStateHasData(this.units, this.levels, this.positions);
+  @override
   List<Object> get props => ['OrganizationStateHasData', units, levels];
 }
 
 class OrganizationStateNoData extends OrganizationState {
+  @override
   List<Object> get props => ['OrganizationStateNoData'];
 }
 

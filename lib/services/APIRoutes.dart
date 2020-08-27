@@ -9,7 +9,7 @@ class APIRoutes {
     Attendance: '/api/v1/attendance',
     AttendanceType: '/api/v1/attendance/types',
     Event: '/api/v1/events',
-    EventType: '/api/v1/events/types',
+    EventType: '/api/v1/eventtypes',
     Level: '/api/v1/level',
     Permission: '/api/v1/permissions',
     Position: '/api/v1/positions',

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
-import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
+import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
 import 'package:nexus_mobile_app/bloc/repositories/update_repository.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/OrganizationPage.dart';
@@ -19,12 +18,14 @@ class BottomNavWidget extends StatefulWidget {
 }
 
 class _BottomNavWidgetState extends State<BottomNavWidget> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   final _widgetOptions = [
     DashboardPage(),
     OrganizationPage(),
-    EventsPage(),
+    RepositoryProvider(
+      create: (context) => EventRepository(),
+      child: EventsPage(),
+    ),
     BlocProvider(
         create: (context) => UpdateBloc(repository: UpdateRepository()),
         child: UpdatesPage())
@@ -38,7 +39,7 @@ class _BottomNavWidgetState extends State<BottomNavWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         body: Center(
           child: _widgetOptions.elementAt(_selectedIndex),
         ),

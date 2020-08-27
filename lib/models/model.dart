@@ -1,1 +1,4 @@
-class Model {}
+class Model {
+  int id;
+  String name;
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/authentication_repository.dart';
@@ -16,7 +17,13 @@ import 'package:nexus_mobile_app/ui/app.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(new NexusApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+      debug: true // optional: set false to disable printing logs to console
+      );
+  runApp(NexusApp());
+}
 
 class NexusApp extends StatelessWidget {
   NexusApp();
@@ -26,12 +33,12 @@ class NexusApp extends StatelessWidget {
     return MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) {
-            final AuthenticationRepository _authRepository =
+            final _authRepository =
                 AuthenticationRepository();
             return AuthenticationBloc(repository: _authRepository);
           }),
           BlocProvider(create: (context) {
-            final OrganizationRepository _orgRepository =
+            final _orgRepository =
                 OrganizationRepository();
             return OrganizationBloc(repository: _orgRepository);
           }),
@@ -60,7 +67,7 @@ class NexusApp extends StatelessWidget {
               create: (_) => LevelProvider(),
             )
           ],
-          child: new MaterialApp(
+          child: MaterialApp(
               title: 'Nexus',
               theme: NexusTheme.light(context),
               darkTheme: NexusTheme.dark(context),

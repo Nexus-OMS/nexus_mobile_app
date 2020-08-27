@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonTile extends StatelessWidget {
-  double height;
-  double width;
-  EdgeInsets padding;
+  final double height;
+  final double width;
+  final EdgeInsets padding;
   SkeletonTile(
       {this.height = 30,
       this.width = double.infinity,
       this.padding = const EdgeInsets.all(12)});
 
-  EdgeInsets textInsets = EdgeInsets.only(top: 4, bottom: 4);
+  final EdgeInsets textInsets = EdgeInsets.only(top: 4, bottom: 4);
 
   @override
   Widget build(BuildContext context) {

@@ -27,7 +27,7 @@ class OrganizationBloc extends Bloc<OrganizationEvent, OrganizationState> {
   }
 
   Stream<OrganizationState> _mapRefreshToState(Completer completer) async* {
-    this.repository = new OrganizationRepository();
+    repository = OrganizationRepository();
     try {
       yield OrganizationStateLoading(
           repository.units, repository.levels, repository.positions);

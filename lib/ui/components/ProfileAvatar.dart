@@ -2,8 +2,8 @@ import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatefulWidget {
-  String initials;
-  String route;
+  final String initials;
+  final String route;
 
   ProfileAvatar({Key key, @required this.initials, @required this.route})
       : super(key: key);
@@ -16,6 +16,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   Map<String, String> constants;
   @override
   void initState() {
+    super.initState();
     asyncInit();
   }
 
@@ -30,9 +31,9 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   @override
   Widget build(BuildContext context) {
     if (widget.route == null || access_token == null || constants == null) {
-      return new CircleAvatar(
-        backgroundColor: new Color(0xFFEEEEEE),
-        child: new Text(widget.initials),
+      return CircleAvatar(
+        backgroundColor: Color(0xFFEEEEEE),
+        child: Text(widget.initials),
         radius: 24,
       );
     }

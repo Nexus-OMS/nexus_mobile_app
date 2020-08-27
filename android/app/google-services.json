@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "410299551802",
+    "firebase_url": "https://nexus-mobile-92179.firebaseio.com",
+    "project_id": "nexus-mobile-92179",
+    "storage_bucket": "nexus-mobile-92179.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410299551802:android:63643a6eb2e2a12acfa503",
+        "android_client_info": {
+          "package_name": "com.barnstorm.nexus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "410299551802-qvtq4440814qg35lguv80tfov5kpojmn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMHEYLXXe4qDlFRPzKaOE8zlq0vAamu10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "410299551802-qvtq4440814qg35lguv80tfov5kpojmn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

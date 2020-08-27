@@ -19,6 +19,7 @@ class SearchStateHasData extends SearchState {
   final List<User> users;
   final List<Update> updates;
   SearchStateHasData(this.users, this.updates);
+  @override
   List<Object> get props => ['SearchStateHasData', users, updates];
 }
 

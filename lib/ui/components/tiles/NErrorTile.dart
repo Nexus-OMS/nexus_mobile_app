@@ -7,25 +7,26 @@ class NErrorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         padding: EdgeInsets.all(16.0),
-        decoration:
-            BoxDecoration(border: new Border(bottom: BorderSide(width: 1))),
-        child: new Container(
+        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
+        child: Container(
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
-          child: new Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(
                 Icons.error_outline,
               ),
-              Text(
-                'There was an issue loading this ' + error_name + '.',
-              ),
+              error_name != null
+                  ? Text(
+                      'There was an issue loading this ' + error_name + '.',
+                    )
+                  : Container(),
             ],
           ),
         ));

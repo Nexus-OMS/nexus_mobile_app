@@ -10,13 +10,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AuthorizedClient {
   //Constants
-  static String TOKEN_KEY = "NEXUS_ACCESS_TOKEN";
-  static String USERNAME_KEY = "NEXUS_USERNAME";
-  static String DOMAIN_KEY = "NEXUS_DOMAIN";
-  static String CLIENT_ID_KEY = "NEXUS_CLIENT_ID";
-  static String CLIENT_SECRET_KEY = "NEXUS_CLIENT_SECRET";
+  static String TOKEN_KEY = 'NEXUS_ACCESS_TOKEN';
+  static String USERNAME_KEY = 'NEXUS_USERNAME';
+  static String DOMAIN_KEY = 'NEXUS_DOMAIN';
+  static String CLIENT_ID_KEY = 'NEXUS_CLIENT_ID';
+  static String CLIENT_SECRET_KEY = 'NEXUS_CLIENT_SECRET';
 
-  static StreamController authDoneController = new StreamController.broadcast();
+  static StreamController authDoneController = StreamController.broadcast();
 
   static Stream get authDone => authDoneController.stream;
 
@@ -53,7 +53,7 @@ class AuthorizedClient {
 
   static Future<TaskStatus> authenticate(
       {String username, String password}) async {
-    Client client = new Client();
+    var client = Client();
     var cst = await getConstants(username);
     debugPrint(' - Authentication Request - ');
     debugPrint('\tBase URI: ' + cst['BASE_URI']);
@@ -64,14 +64,14 @@ class AuthorizedClient {
     }, body: {
       'username': username,
       'password': password,
-      'grant_type': cst["GRANT_TYPE"],
-      'client_id': cst["CLIENT_ID"],
-      'client_secret': cst["CLIENT_SECRET"],
-      'scope': cst["SCOPE"]
+      'grant_type': cst['GRANT_TYPE'],
+      'client_id': cst['CLIENT_ID'],
+      'client_secret': cst['CLIENT_SECRET'],
+      'scope': cst['SCOPE']
     }).catchError((e) {
       print(e);
       return TaskStatus.FAILURE;
-    }).timeout(new Duration(seconds: 6));
+    }).timeout(Duration(seconds: 6));
 
     debugPrint(response.body.toString());
     debugPrint('\tStatus Code: ' + response.statusCode.toString());
@@ -90,13 +90,13 @@ class AuthorizedClient {
       {@required String route,
       @required Map<String, String> constants,
       @required String access_token}) {
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.authorizationHeader: 'Bearer ' + access_token
     };
     try {
-      NetworkImage net =
-          new NetworkImage(constants['BASE_URI'] + route, headers: headers);
-      return new Image(
+      var net =
+          NetworkImage(constants['BASE_URI'] + route, headers: headers);
+      return Image(
         image: net,
         fit: BoxFit.cover,
         alignment: Alignment(0, -1),
@@ -111,12 +111,12 @@ class AuthorizedClient {
       {@required String route,
       @required Map<String, String> constants,
       @required String access_token}) {
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.authorizationHeader: 'Bearer ' + access_token
     };
     try {
-      NetworkImage net =
-          new NetworkImage(constants['BASE_URI'] + route, headers: headers);
+      var net =
+          NetworkImage(constants['BASE_URI'] + route, headers: headers);
       return net;
     } catch (error) {
       print(error.toString());
@@ -131,6 +131,11 @@ class AuthorizedClient {
           return json.decode(response.body);
         }
         break;
+      case HttpStatus.created:
+        {
+          return json.decode(response.body);
+        }
+        break;
       case HttpStatus.unauthorized:
         {
           debugPrint('== Unauthorized ==');
@@ -140,18 +145,18 @@ class AuthorizedClient {
       default:
         {
           print(response.request);
-          throw new HttpRequestError(response.statusCode);
+          throw HttpRequestError(response.statusCode);
         }
     }
   }
 
   // Should have a catchError block whenever this is called.
   static Future<dynamic> get({String route}) async {
-    Client client = new Client();
-    String token = await retrieveAccessToken();
+    var client = Client();
+    var token = await retrieveAccessToken();
     if (token == null) return null;
     var cst = await getConstants();
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.acceptHeader: 'application/json',
       HttpHeaders.authorizationHeader: 'Bearer ' + token
     };
@@ -159,39 +164,41 @@ class AuthorizedClient {
         .get(cst['BASE_URI'] + route, headers: headers)
         .then((response) {
       return processResponse(response);
-    }).timeout(new Duration(seconds: 6));
+    }).timeout(Duration(seconds: 6));
   }
 
   // Should have a catchError block whenever this is called.
   static Future<dynamic> post(
       {String route, Map<String, dynamic> content}) async {
-    Client client = new Client();
-    String token = await retrieveAccessToken();
-    print('got token');
+    var client = Client();
+    var token = await retrieveAccessToken();
     if (token == null) return null;
-    print('tokennotnull');
     var cst = await getConstants();
-    print('gotconstants');
-    Map<String, String> headers = {
+    var headers = <String, String>{
       HttpHeaders.acceptHeader: 'application/json',
       HttpHeaders.authorizationHeader: 'Bearer ' + token
     };
+    var _content = <String, dynamic>{};
+    content.forEach((key, value) {
+      if (value != null && value != 'null') _content[key] = value;
+    });
     return client
-        .post(cst['BASE_URI'] + route, headers: headers, body: content)
+        .post(cst['BASE_URI'] + route, headers: headers, body: _content)
         .then((response) {
+      print(response.body);
       return processResponse(response);
-    }).timeout(new Duration(seconds: 6));
+    }).timeout(Duration(seconds: 6));
   }
 
   static Future<Map<String, String>> getConstants([String username]) async {
     final clientId = await _getSecureStorage().read(key: CLIENT_ID_KEY);
     final secret = await _getSecureStorage().read(key: CLIENT_SECRET_KEY);
-    Map<String, String> headers = {
-      "BASE_URI": 'https://' + await getDomain(),
-      "CLIENT_ID": clientId,
-      "CLIENT_SECRET": secret,
-      "GRANT_TYPE": "password",
-      "SCOPE": ""
+    var headers = <String, String>{
+      'BASE_URI': 'https://' + await getDomain(),
+      'CLIENT_ID': clientId,
+      'CLIENT_SECRET': secret,
+      'GRANT_TYPE': 'password',
+      'SCOPE': ''
     };
     return headers;
   }
@@ -203,12 +210,12 @@ class AuthorizedClient {
   }
 
   static Future<bool> checkConnection() async {
-    return null != await (new Connectivity().checkConnectivity());
+    return null != await (Connectivity().checkConnectivity());
   }
 
   // KeyChain Functions
   static FlutterSecureStorage _getSecureStorage() {
-    return new FlutterSecureStorage();
+    return FlutterSecureStorage();
   }
 
   static Future<String> retrieveUsername() async {
@@ -270,6 +277,6 @@ class HttpRequestError {
   HttpRequestError(this.status);
   @override
   String toString() {
-    return "HTTP Status: " + status.toString();
+    return 'HTTP Status: ' + status.toString();
   }
 }

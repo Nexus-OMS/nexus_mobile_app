@@ -30,8 +30,8 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
 
   Stream<UpdateState> _mapPageToState() async* {
     try {
-      final updates = await _repository.page();
-      if (updates == null || updates.length == 0) {
+      final updates = await _repository.all();
+      if (updates == null || updates.isEmpty) {
         yield UpdateStateNoData();
       } else {
         yield UpdateStateHasData(updates);
@@ -42,12 +42,12 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
   }
 
   Stream<UpdateState> _mapRefreshToState(Completer completer) async* {
-    this._repository = new UpdateRepository();
+    _repository = UpdateRepository();
     try {
       yield UpdateStateLoading();
-      final updates = await _repository.page();
+      final updates = await _repository.all();
       completer.complete();
-      if (updates == null || updates.length == 0) {
+      if (updates == null || updates.isEmpty) {
         yield UpdateStateNoData();
       } else {
         yield UpdateStateHasData(updates);

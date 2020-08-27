@@ -8,11 +8,11 @@ class MemberList extends StatelessWidget {
   MemberList(this.users);
   @override
   Widget build(BuildContext context) {
-    if (this.users == null) {
+    if (users == null) {
       return SliverList(
         delegate: SliverChildListDelegate([SkeletonTile(height: 38)]),
       );
-    } else if (this.users.length == 0) {
+    } else if (users.isEmpty) {
       return SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
         return Container(
@@ -38,7 +38,7 @@ class MemberList extends StatelessWidget {
     }
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-      Widget widget = MemberTile(user: this.users[index]);
+      Widget widget = MemberTile(user: users[index]);
       if (index == 0) {
         widget = Padding(padding: EdgeInsets.only(top: 8), child: widget);
       }

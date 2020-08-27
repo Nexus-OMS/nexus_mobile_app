@@ -1,7 +1,9 @@
 import 'model.dart';
 
 class Unit extends Model {
+  @override
   int id;
+  @override
   String name;
   String ad_group;
 
@@ -14,7 +16,7 @@ class Unit extends Model {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
+    var map = <String, dynamic>{
       'o_id': id,
       'name': name,
       'ad_group': ad_group,

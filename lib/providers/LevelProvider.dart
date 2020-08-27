@@ -11,11 +11,9 @@ class LevelProvider with ChangeNotifier {
   LevelProvider();
 
   Future retreive() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels = await AuthorizedClient.get(route: APIRoutes.routes[Level]);
-    if (levels == null) {
-      levels = List();
-    }
+    levels ??= [];
     for (var item in raw_levels) {
       levels.add(Level.fromMap(item));
     }

@@ -28,6 +28,11 @@ class AuthenticationEventSignOut extends AuthenticationEvent {
   List<Object> get props => ['SignOut'];
 }
 
+class AuthenticationEventRefresh extends AuthenticationEvent {
+  @override
+  List<Object> get props => ['AuthenticationEventRefresh'];
+}
+
 class AuthenticationEventClearError extends AuthenticationEvent {
   @override
   List<Object> get props => ['AuthenticationEventClearError'];

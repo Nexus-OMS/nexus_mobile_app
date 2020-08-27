@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:nexus_mobile_app/models/APIModel.dart';
 
 import 'Permission.dart';
@@ -6,6 +7,7 @@ import 'Level.dart';
 import 'Rank.dart';
 
 class User extends APIModel {
+  @override
   int id;
   String un;
   Level level;
@@ -25,11 +27,25 @@ class User extends APIModel {
   User();
 
   String getFullName() {
-    return this.firstName + " " + this.lastName;
+    return firstName + ' ' + lastName;
   }
 
   String getInitials() {
-    return this.firstName[0] + this.lastName[0];
+    return firstName[0] + lastName[0];
+  }
+
+  bool hasPermission(List<String> perms) {
+    perms.add('All');
+    var t = permissions.firstWhere((element) => perms.contains(element.name));
+    return t != null;
+  }
+
+  bool canScan() {
+    return hasPermission(['Records', 'EventScanning']);
+  }
+
+  bool canManageRecords() {
+    return hasPermission(['Records']);
   }
 
   @override
@@ -46,11 +62,22 @@ class User extends APIModel {
     school = map['school'];
     major = map['major'];
     hometown = map['hometown'];
+    permissions = [];
+    if (map['permissions'] != null) {
+      try {
+        for (var perm in map['permissions']) {
+          permissions.add(Permission.fromMap(perm));
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
     if (map['image_uri'] != null) {
-      if ((map['image_uri'] as String).contains('images/profile-pic.png'))
+      if ((map['image_uri'] as String).contains('images/profile-pic.png')) {
         image_uri = null;
-      else
+      } else {
         image_uri = map['image_uri'];
+      }
     } else {
       image_uri = null;
     }
@@ -64,7 +91,7 @@ class User extends APIModel {
 
   @override
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
+    var map = <String, dynamic>{
       'o_id': id,
       'un': un,
       'level': level != null ? level.id : null,

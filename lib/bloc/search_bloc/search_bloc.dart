@@ -25,7 +25,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Stream<SearchState> _mapRefreshToState(String query) async* {
     try {
       yield SearchStateLoading();
-      var results = await this.search(query: query);
+      var results = await search(query: query);
       yield SearchStateHasData(results[0], results[1]);
     } catch (err, stacktrace) {
       print(err);
@@ -37,14 +37,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<List<List<APIModel>>> search({String query}) async {
     var raw_values =
         await AuthorizedClient.get(route: '/api/v1/search?query=$query');
-    List<User> users = List();
-    List<Update> updates = List();
+    var users = [];
+    var updates = [];
     for (var item in raw_values['users']) {
-      User model = User.fromMap(item);
+      var model = User.fromMap(item);
       users.add(model);
     }
     for (var item in raw_values['updates']) {
-      Update model = Update.fromMap(item);
+      var model = Update.fromMap(item);
       updates.add(model);
     }
     return [users, updates];

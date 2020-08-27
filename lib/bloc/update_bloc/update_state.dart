@@ -19,10 +19,12 @@ class UpdateStateLoading extends UpdateState {
 class UpdateStateHasData extends UpdateState {
   final List<Update> updates;
   UpdateStateHasData(this.updates);
+  @override
   List<Object> get props => ['UpdateStateHasData', updates];
 }
 
 class UpdateStateNoData extends UpdateState {
+  @override
   List<Object> get props => ['UpdateStateNoData'];
 }
 

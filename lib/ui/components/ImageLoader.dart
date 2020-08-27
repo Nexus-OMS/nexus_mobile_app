@@ -2,10 +2,7 @@ import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:flutter/material.dart';
 
 class ImageLoader extends StatefulWidget {
-  String initials;
-  String route;
-  String access_token;
-  Map<String, String> constants;
+  final String route;
 
   ImageLoader({Key key, @required this.route}) : super(key: key);
   @override
@@ -13,31 +10,31 @@ class ImageLoader extends StatefulWidget {
 }
 
 class _ImageLoaderState extends State<ImageLoader> {
+  String access_token;
+  Map<String, String> constants;
+  String initials;
   @override
   void initState() {
+    super.initState();
     AuthorizedClient.getConstants().then((constants) {
       setState(() {
-        widget.constants = constants;
+        constants = constants;
       });
     });
 
     AuthorizedClient.retrieveAccessToken().then((token) {
       setState(() {
-        widget.access_token = token;
+        access_token = token;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.route == null ||
-        widget.access_token == null ||
-        widget.constants == null) {
+    if (widget.route == null || access_token == null || constants == null) {
       return null;
     }
     return AuthorizedClient.getImageWidget(
-        route: widget.route,
-        constants: widget.constants,
-        access_token: widget.access_token);
+        route: widget.route, constants: constants, access_token: access_token);
   }
 }

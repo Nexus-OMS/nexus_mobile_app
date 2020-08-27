@@ -12,12 +12,12 @@ class AuthenticationRepository {
     try {
       var token = await AuthorizedClient.retrieveAccessToken();
       if (token == null) {
-        throw ErrorDescription("No stored token");
+        throw ErrorDescription('No stored token');
       }
-      this.user = User.fromMap(
+      user = User.fromMap(
           await AuthorizedClient.get(route: APIRoutes.routes[User] + '/self'));
       if (user == null) {
-        throw ErrorDescription("Bad response");
+        throw ErrorDescription('Bad response');
       }
     } catch (err) {
       isAuthenticated = false;
@@ -27,23 +27,36 @@ class AuthenticationRepository {
     return isAuthenticated;
   }
 
+  Future<User> refresh() async {
+    try {
+      var temp =
+          await AuthorizedClient.get(route: APIRoutes.routes[User] + '/self');
+      user = User.fromMap(temp);
+    } catch (err) {
+      return null;
+    }
+    isAuthenticated = true;
+    return user;
+  }
+
   Future<User> signIn(String username, String password) async {
     try {
       final stat = await AuthorizedClient.authenticate(
           username: username, password: password);
-      if (stat != TaskStatus.SUCCESS)
-        throw ErrorDescription("Error signing in.");
-      this.user = User.fromMap(
+      if (stat != TaskStatus.SUCCESS) {
+        throw ErrorDescription('Error signing in.');
+      }
+      user = User.fromMap(
           await AuthorizedClient.get(route: APIRoutes.routes[User] + '/self'));
     } catch (err) {
       return null;
     }
-    this.isAuthenticated = true;
-    return this.user;
+    isAuthenticated = true;
+    return user;
   }
 
   Future signOut() async {
-    this.isAuthenticated = false;
+    isAuthenticated = false;
     await AuthorizedClient.deauthorize();
   }
 }

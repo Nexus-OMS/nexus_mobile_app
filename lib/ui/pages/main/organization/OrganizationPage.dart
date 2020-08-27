@@ -2,18 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/ui/components/PageLoadingIndicator.dart';
-import 'package:nexus_mobile_app/ui/components/save_area_header.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/MemberPage.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/PositionPage.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_bar.dart';
+
+import 'ProfilePage.dart';
 
 class OrganizationPage extends StatefulWidget {
   @override
@@ -25,10 +27,11 @@ enum _UsersState { uninitialized, loading, error, hasData }
 class _OrganizationPageState extends State<OrganizationPage>
     with AutomaticKeepAliveClientMixin {
   _UsersState _usersState = _UsersState.uninitialized;
-  List<User> users = List();
+  List<User> users = [];
 
   @override
   void initState() {
+    super.initState();
     getUsers();
   }
 
@@ -36,7 +39,7 @@ class _OrganizationPageState extends State<OrganizationPage>
     if (mounted) {
       setState(() {
         _usersState = _UsersState.loading;
-        users = List();
+        users = [];
       });
     }
     var raw = await AuthorizedClient.get(route: APIRoutes.routes[User]);
@@ -52,16 +55,20 @@ class _OrganizationPageState extends State<OrganizationPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<OrganizationBloc, OrganizationState>(
         builder: (context, state) {
-      if (state is OrganizationStateUninitialized)
+      if (state is OrganizationStateUninitialized) {
         context
             .bloc<OrganizationBloc>()
             .add(OrganizationEventRefresh(Completer()));
+      }
       return SafeArea(
           child: RefreshIndicator(
               onRefresh: () {
-                Completer completer = new Completer();
+                BlocProvider.of<AuthenticationBloc>(context)
+                    .add(AuthenticationEventRefresh());
+                var completer = Completer();
                 context
                     .bloc<OrganizationBloc>()
                     .add(OrganizationEventRefresh(completer));
@@ -80,7 +87,7 @@ class _OrganizationPageState extends State<OrganizationPage>
   }
 
   Widget _buildLevelsRow(OrganizationStateHasData state) {
-    if (state.levels != null && state.levels.length != 0) {
+    if (state.levels != null && state.levels.isNotEmpty) {
       return Container(
         height: 80.0,
         padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -117,8 +124,8 @@ class _OrganizationPageState extends State<OrganizationPage>
       return Container(
         padding: EdgeInsets.only(right: 24.0, bottom: 12, left: 24.0),
         child: OutlineButton(
-          shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(8.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           padding: EdgeInsets.all(8.0),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -126,7 +133,7 @@ class _OrganizationPageState extends State<OrganizationPage>
           },
           child: Container(
             padding: EdgeInsets.all(8.0),
-            child: Text("Organization Chart",
+            child: Text('Organization Chart',
                 style: Theme.of(context).textTheme.button.copyWith(
                       fontWeight: FontWeight.w800,
                     )),
@@ -177,9 +184,9 @@ class _OrganizationPageState extends State<OrganizationPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('No Data',
-                      style: new TextStyle(fontSize: 16.0, color: Colors.grey)),
+                      style: TextStyle(fontSize: 16.0, color: Colors.grey)),
                   Text('Pull to Refresh',
-                      style: new TextStyle(fontSize: 12.0, color: Colors.grey)),
+                      style: TextStyle(fontSize: 12.0, color: Colors.grey)),
                 ],
               ),
             );
@@ -211,7 +218,12 @@ class _SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
       children: [
         SearchBar(
           floating: true,
-          searchReturn: () {},
+          searchReturn: (user) {
+            if (user is User) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProfilePage(user.id)));
+            }
+          },
         )
       ],
     );

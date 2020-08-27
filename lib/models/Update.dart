@@ -1,13 +1,12 @@
 import 'package:nexus_mobile_app/models/APIModel.dart';
+import 'package:nexus_mobile_app/models/User.dart';
 
 class Update extends APIModel {
-  int id;
-
   //String image_uri;
   String update_title;
   String update_text;
   String updated_at;
-  dynamic user;
+  User user;
   //bool published;
   int user_id;
 
@@ -17,14 +16,15 @@ class Update extends APIModel {
     id = map['o_id'];
     update_title = map['update_title'];
     update_text = (map['update_text'] as String);
-    update_text = update_text == null ? null : update_text.replaceAll("\\", "");
+    update_text = update_text == null ? null : update_text.replaceAll('\\', '');
     updated_at = map['updated_at'];
-    user_id = map['user_id'];
-    user = map['user'];
+    user_id =
+        map['user_id'] is String ? int.parse(map['user_id']) : map['user_id'];
+    user = map['user'] != null ? User.fromMap(map['user']) : null;
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
+    var map = {
       'o_id': id,
       'update_title': update_title,
       'update_text': update_text,

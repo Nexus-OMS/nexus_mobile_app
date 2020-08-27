@@ -22,7 +22,7 @@ class AuthenticationStateAuthenticated extends AuthenticationState {
   AuthenticationStateAuthenticated(this.user);
 
   @override
-  List<Object> get props => ["AuthenticationStateAuthenticated", user];
+  List<Object> get props => ['AuthenticationStateAuthenticated', user];
 }
 
 class AuthenticationStateAuthenticationError

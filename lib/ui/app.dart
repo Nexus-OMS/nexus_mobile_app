@@ -23,17 +23,17 @@ class _AppState extends State<App> {
   Uri _latestUri;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     initPlatformState();
   }
 
-  initPlatformState() async {
+  Future<void> initPlatformState() async {
     await initPlatformStateForUriUniLinks();
   }
 
   /// An implementation using the [Uri] convenience helpers
-  initPlatformStateForUriUniLinks() async {
+  Future<void> initPlatformStateForUriUniLinks() async {
     // Attach a listener to the Uri links stream
     _sub = getUriLinksStream().listen((Uri uri) {
       if (!mounted) return;
@@ -53,7 +53,7 @@ class _AppState extends State<App> {
       final authed = await BlocProvider.of<AuthenticationBloc>(context)
           .repository
           .isAuthenticated;
-      if (uri?.host == "login.nexus.barnstorm" && host != null && !authed) {
+      if (uri?.host == 'login.nexus.barnstorm' && host != null && !authed) {
         final client = uri.queryParameters;
         await AuthorizedClient.setClient(client['client_id'], client['secret']);
         BlocProvider.of<AuthenticationBloc>(context)

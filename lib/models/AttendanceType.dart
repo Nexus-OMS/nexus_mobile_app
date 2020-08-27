@@ -1,8 +1,10 @@
 import 'model.dart';
 
 class AttendanceType extends Model {
+  @override
   int id;
   String short;
+  @override
   String name;
 
   AttendanceType();
@@ -14,7 +16,7 @@ class AttendanceType extends Model {
   }
 
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {'o_id': id, 'short': short, 'name': name};
+    var map = <String, dynamic>{'o_id': id, 'short': short, 'name': name};
     return map;
   }
 }

@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 
 class TermProvider with ChangeNotifier {
-  List<Term> terms = List();
+  List<Term> terms = [];
 
   TermProvider();
 
@@ -18,7 +18,7 @@ class TermProvider with ChangeNotifier {
   }
 
   Future all() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels = await AuthorizedClient.get(route: APIRoutes.routes[Term]);
     for (var item in raw_levels) {
       terms.removeWhere((sitem) => sitem.term == item.term);

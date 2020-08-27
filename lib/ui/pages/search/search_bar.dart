@@ -6,7 +6,7 @@ const double CUSTOM_APP_BAR_HEIGHT = kToolbarHeight;
 
 class SearchBar extends StatefulWidget {
   final bool floating;
-  final Function searchReturn;
+  final Function(dynamic) searchReturn;
   final List<SearchTypes> searchTypes;
 
   const SearchBar(

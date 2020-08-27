@@ -5,7 +5,7 @@ import 'package:nexus_mobile_app/ui/theme.dart';
 class BubbleTabDecorator extends Decoration {
   @override
   _CustomPainter createBoxPainter([VoidCallback onChanged]) {
-    return new _CustomPainter(this, onChanged);
+    return _CustomPainter(this, onChanged);
   }
 }
 
@@ -24,11 +24,11 @@ class _CustomPainter extends BoxPainter {
 
     //offset is the position from where the decoration should be drawn.
     //configuration.size tells us about the height and width of the tab.
-    final Rect rect = Offset(
+    final rect = Offset(
             offset.dx, (configuration.size.height / 2) - indicatorHeight / 2) &
         Size(configuration.size.width, indicatorHeight);
 
-    final Paint paint = Paint();
+    final paint = Paint();
     paint.color = NexusTheme.primary;
     paint.style = PaintingStyle.fill;
     canvas.drawRRect(

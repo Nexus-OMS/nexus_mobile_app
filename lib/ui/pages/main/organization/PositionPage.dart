@@ -58,7 +58,7 @@ class _PositionPageState extends State<PositionPage> {
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: OutlineButton(
                 shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(8.0)),
+                    borderRadius: BorderRadius.circular(8.0)),
                 padding: EdgeInsets.all(8.0),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(

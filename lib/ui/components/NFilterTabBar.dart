@@ -7,17 +7,17 @@ class NFilterTabBar extends StatelessWidget {
     @required this.controller,
   });
 
-  List<Tab> tabs;
-  TabController controller;
+  final List<Tab> tabs;
+  final TabController controller;
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       padding: EdgeInsets.only(left: 16.0, right: 16.0),
-      child: new TabBar(
+      child: TabBar(
         tabs: tabs,
         isScrollable: true,
-        indicator: new BubbleTabDecorator(),
+        indicator: BubbleTabDecorator(),
         controller: controller,
       ),
     );

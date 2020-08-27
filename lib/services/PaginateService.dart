@@ -12,21 +12,22 @@ class PaginateService<APIModel> {
   PaginateService({this.arguments, @required this.route, this.next_page = 1});
 
   Future<dynamic> page({int size = 15, String query}) async {
-    String url = route + '?page=' + next_page.toString();
+    var url = route + '?page=' + next_page.toString();
     if (query != null) {
-      url += "&$query";
+      url += '&$query';
     }
     var response = await AuthorizedClient.get(route: url);
     // Increase page numbers, return data
     if (response is List) {
-      this.last_page = 1;
-      this.next_page = 1;
+      last_page = 1;
+      next_page = 1;
       return response;
     }
-    this.last_page = response["last_page"];
-    if (this.last_page < response["current_page"])
-      this.next_page = response["current_page"]++;
+    last_page = response['last_page'];
+    if (last_page < response['current_page']) {
+      next_page = response['current_page']++;
+    }
 
-    return response["data"] ?? response;
+    return response['data'] ?? response;
   }
 }

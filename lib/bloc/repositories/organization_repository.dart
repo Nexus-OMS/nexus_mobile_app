@@ -7,13 +7,13 @@ import 'package:nexus_mobile_app/services/PaginateService.dart';
 
 class OrganizationRepository {
   PaginateService userPager;
-  List<User> users = List();
-  List<Level> levels = List();
-  List<Unit> units = List();
-  Position positions = null;
+  List<User> users = [];
+  List<Level> levels = [];
+  List<Unit> units = [];
+  Position positions;
 
   OrganizationRepository() {
-    this.userPager = new PaginateService(route: APIRoutes.routes[User]);
+    userPager = PaginateService(route: APIRoutes.routes[User]);
   }
 
   bool nullEmpty(dynamic obj) {
@@ -22,14 +22,14 @@ class OrganizationRepository {
 
   Future<List<User>> pageUsers({String query, bool refresh}) async {
     if (refresh ?? false) {
-      this.userPager = new PaginateService(route: APIRoutes.routes[User]);
-      users = List();
+      userPager = PaginateService(route: APIRoutes.routes[User]);
+      users = [];
     }
     var raw_values = query != null
         ? await userPager.page(query: query)
         : await userPager.page();
     for (var item in raw_values) {
-      User user = User.fromMap(item);
+      var user = User.fromMap(item);
       users.removeWhere((sitem) => sitem.id == user.id);
       users.add(user);
     }
@@ -46,11 +46,11 @@ class OrganizationRepository {
   Future<List<User>> getUsersByPosition(int id) async {
     var raw_value =
         await AuthorizedClient.get(route: APIRoutes.routes[Position] + '/$id');
-    List<User> _users = List();
+    var _users = [];
     for (var item in raw_value['user']) {
       if (item['level'] is int && !nullEmpty(levels)) {
         item['level'] =
-            this.levels.firstWhere((element) => element.id == item['level']);
+            levels.firstWhere((element) => element.id == item['level']);
       }
       _users.add(User.fromMap(item));
     }
@@ -73,7 +73,7 @@ class OrganizationRepository {
 
   Future<List<Unit>> getUnits() async {
     var raw_values = await AuthorizedClient.get(route: APIRoutes.routes[Unit]);
-    units = List();
+    units = [];
     for (var item in raw_values) {
       var unit = Unit.fromMap(item);
       units.add(unit);
@@ -90,12 +90,12 @@ class OrganizationRepository {
 
   Future<List<Level>> getLevels() async {
     var raw_values = await AuthorizedClient.get(route: APIRoutes.routes[Level]);
-    this.levels = List();
+    levels = [];
     for (var item in raw_values) {
       var level = Level.fromMap(item);
-      this.levels.add(level);
+      levels.add(level);
     }
-    return this.levels;
+    return levels;
   }
 
   Future<Level> getLevel(int id) async {

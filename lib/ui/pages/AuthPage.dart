@@ -13,27 +13,25 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
-  BuildContext _scaffoldContext;
   TextEditingController domainTextController = TextEditingController();
 
-  TextEditingController usernameTextController = new TextEditingController();
-  TextEditingController passwordTextController = new TextEditingController();
+  TextEditingController usernameTextController = TextEditingController();
+  TextEditingController passwordTextController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  bool _isPressed = false;
-  double _width = 384.0;
+  final double _width = 384.0;
   Animation _animation;
   double _animationValue = 0;
-  GlobalKey _globalKey = GlobalKey();
+  final GlobalKey _globalKey = GlobalKey();
 
-  FocusNode _domainFocus = FocusNode();
+  final FocusNode _domainFocus = FocusNode();
 
   bool _autoValidateD = false;
 
   AnimationController controller;
 
-  FocusNode _unFocus = FocusNode();
-  FocusNode _pwFocus = FocusNode();
+  final FocusNode _unFocus = FocusNode();
+  final FocusNode _pwFocus = FocusNode();
 
   bool _autoValidateUN = false;
   bool _autoValidatePW = false;
@@ -64,7 +62,6 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         builder: (context, state) {
       return Scaffold(
         body: Builder(builder: (BuildContext context) {
-          _scaffoldContext = context;
           return Container(
               padding: EdgeInsets.all(16.0),
               child: Center(
@@ -184,9 +181,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   Widget buildAuthForm(state) {
     return Column(
       children: [
-        new Padding(
+        Padding(
           padding: const EdgeInsets.all(10.0),
-          child: new TextFormField(
+          child: TextFormField(
               controller: usernameTextController,
               keyboardType: TextInputType.emailAddress,
               autocorrect: false,
@@ -202,13 +199,13 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               },
               validator: (val) =>
                   val.isEmpty ? 'Username can\'t be empty.' : null,
-              decoration: new InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Username',
               )),
         ),
-        new Padding(
+        Padding(
           padding: const EdgeInsets.all(10.0),
-          child: new TextFormField(
+          child: TextFormField(
             controller: passwordTextController,
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.done,
@@ -217,7 +214,6 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             onFieldSubmitted: (term) {
               _pwFocus.unfocus();
               setState(() {
-                _isPressed = true;
                 _autoValidatePW = true;
                 onSubmit();
               });
@@ -226,28 +222,27 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             validator: (val) =>
                 val.isEmpty ? 'Password can\'t be empty.' : null,
             obscureText: true,
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
               hintText: 'Password',
             ),
           ),
         ),
-        new Padding(
+        Padding(
           padding: const EdgeInsets.all(12.0),
-          child: new Container(
+          child: Container(
             key: _globalKey,
             height: 48.0,
             width: _width - ((_width - 48.0) * _animationValue),
-            child: new RaisedButton(
+            child: RaisedButton(
                 shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.all(
-                        new Radius.circular(16.0 + (8 * _animationValue)))),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(16.0 + (8 * _animationValue)))),
                 padding: EdgeInsets.all(8.0),
                 color: getColor(state),
                 onPressed: () {},
                 child: buildButtonChild(),
                 onHighlightChanged: (isPressed) {
                   setState(() {
-                    _isPressed = isPressed;
                     if (state != AuthenticationStateAuthenticating ||
                         state != AuthenticationStateAuthenticationError) {
                       onSubmit();

@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 
 class AttendanceTypeProvider with ChangeNotifier {
-  List<AttendanceType> attendance_types = List();
+  List<AttendanceType> attendance_types = [];
 
   AttendanceTypeProvider();
 
@@ -18,7 +18,7 @@ class AttendanceTypeProvider with ChangeNotifier {
   }
 
   Future all() async {
-    var completer = new Completer();
+    var completer = Completer();
     var raw_levels =
         await AuthorizedClient.get(route: APIRoutes.routes[AttendanceType]);
     for (var item in raw_levels) {
