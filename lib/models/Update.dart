@@ -1,5 +1,5 @@
-import 'package:nexus_mobile_app/models/APIModel.dart';
-import 'package:nexus_mobile_app/models/User.dart';
+import 'package:nexus_mobile_app/models/api_model.dart';
+import 'User.dart';
 
 class Update extends APIModel {
   //String image_uri;

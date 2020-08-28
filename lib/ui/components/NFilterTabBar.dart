@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/ui/decorators/BubbleTabDecorator.dart';
+import 'package:nexus_mobile_app/ui/decorators/bubble_tab_decorator.dart';
 
 class NFilterTabBar extends StatelessWidget {
   NFilterTabBar({

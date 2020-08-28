@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nexus_mobile_app/bloc/repositories/authentication_repository.dart';
-import 'package:nexus_mobile_app/models/User.dart';
+import 'package:nexus_mobile_app/models/user.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';

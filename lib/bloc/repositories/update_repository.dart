@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
-import 'package:nexus_mobile_app/models/Update.dart';
-import 'package:nexus_mobile_app/services/APIRoutes.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
-import 'package:nexus_mobile_app/services/PaginateService.dart';
+import 'package:nexus_mobile_app/models/update.dart';
+import 'package:nexus_mobile_app/services/api_routes.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
+import 'package:nexus_mobile_app/services/paginate_service.dart';
 
 class UpdateRepository extends APIRepository {
   PaginateService pager;

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 
 class PaginateService<APIModel> {
   int next_page;

@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/enum/TaskStatus.dart';
+import 'package:nexus_mobile_app/enum/task_status.dart';
 import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 

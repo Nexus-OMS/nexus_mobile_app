@@ -1,4 +1,4 @@
-import 'package:nexus_mobile_app/models/APIModel.dart';
+import 'package:nexus_mobile_app/models/api_model.dart';
 
 class Position extends APIModel {
   @override

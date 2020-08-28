@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/user_bloc/user_bloc.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/ui/components/ImageLoader.dart';
+import 'package:nexus_mobile_app/ui/components/image_loader.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';

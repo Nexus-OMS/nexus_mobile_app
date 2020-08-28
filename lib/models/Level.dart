@@ -1,4 +1,4 @@
-import 'package:nexus_mobile_app/models/APIModel.dart';
+import 'package:nexus_mobile_app/models/api_model.dart';
 
 final String api_route = '/api/v1/level';
 final String tableName = 'levels';

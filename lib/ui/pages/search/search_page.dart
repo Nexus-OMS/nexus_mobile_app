@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/search_repository.dart';
-import 'package:nexus_mobile_app/enum/SearchTypes.dart';
-import 'package:nexus_mobile_app/models/User.dart';
+import 'package:nexus_mobile_app/enum/search_types.dart';
+import 'package:nexus_mobile_app/models/user.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/member_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/update_tile.dart';
 import 'package:nexus_mobile_app/utils/debouncer.dart';
 
 import '../../theme.dart';

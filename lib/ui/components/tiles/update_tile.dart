@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/models/Update.dart';
-import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/pages/main/UpdatesPage.dart';
+import 'package:nexus_mobile_app/models/update.dart';
+import 'package:nexus_mobile_app/ui/components/profile_avatar.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/pages/main/updates_page.dart';
 
 class UpdateTile extends StatelessWidget {
   final Update update;

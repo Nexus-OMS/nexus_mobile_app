@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
-import 'package:nexus_mobile_app/models/Event.dart';
-import 'package:nexus_mobile_app/models/EventType.dart';
+import 'package:nexus_mobile_app/models/event.dart';
+import 'package:nexus_mobile_app/models/event_type.dart';
 import 'package:nexus_mobile_app/models/model.dart';
 import 'package:nexus_mobile_app/ui/components/selection_row.dart';
 import 'package:nexus_mobile_app/extensions.dart';

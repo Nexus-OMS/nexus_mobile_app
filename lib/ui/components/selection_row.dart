@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/model.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
 
 class SelectionRow extends StatefulWidget {
   final Function onSelect;

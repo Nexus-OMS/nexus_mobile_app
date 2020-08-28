@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:nexus_mobile_app/models/APIModel.dart';
+import 'package:nexus_mobile_app/models/api_model.dart';
 
-import 'Permission.dart';
-import 'Position.dart';
-import 'Level.dart';
-import 'Rank.dart';
+import 'permission.dart';
+import 'position.dart';
+import 'level.dart';
+import 'rank.dart';
 
 class User extends APIModel {
   @override

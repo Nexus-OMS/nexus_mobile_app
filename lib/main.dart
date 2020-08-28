@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.da
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/authentication_repository.dart';
 import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 import 'package:nexus_mobile_app/ui/app.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 

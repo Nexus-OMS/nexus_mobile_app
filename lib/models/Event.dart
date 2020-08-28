@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
-import 'APIModel.dart';
-import 'Attendance.dart';
+import 'api_model.dart';
+import 'attendance.dart';
 
 class Event extends APIModel {
   @override

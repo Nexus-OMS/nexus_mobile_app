@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/ProfilePage.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/ui/components/profile_avatar.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/profile_page.dart';
 
 class MemberTile extends StatelessWidget {
   final User user;

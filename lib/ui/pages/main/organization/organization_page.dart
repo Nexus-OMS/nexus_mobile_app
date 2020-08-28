@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/services/APIRoutes.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/services/api_routes.dart';
 import 'package:nexus_mobile_app/extensions.dart';
-import 'package:nexus_mobile_app/ui/components/PageLoadingIndicator.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/MemberPage.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/PositionPage.dart';
+import 'package:nexus_mobile_app/ui/components/page_loading_indicator.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/member_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/member_page.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/position_page.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_bar.dart';
 
-import 'ProfilePage.dart';
+import 'profile_page.dart';
 
 class OrganizationPage extends StatefulWidget {
   @override

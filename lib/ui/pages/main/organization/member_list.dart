@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/member_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
 
 class MemberList extends StatelessWidget {
   final List<User> users;

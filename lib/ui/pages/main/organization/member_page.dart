@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/users_bloc/users_bloc.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/MemberList.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/member_list.dart';
 
 class MemberPage extends StatefulWidget {
   final String title;

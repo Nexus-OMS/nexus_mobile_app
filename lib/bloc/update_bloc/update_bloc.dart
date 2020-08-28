@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nexus_mobile_app/bloc/repositories/update_repository.dart';
-import 'package:nexus_mobile_app/models/Update.dart';
+import 'package:nexus_mobile_app/models/update.dart';
 
 part 'update_event.dart';
 part 'update_state.dart';

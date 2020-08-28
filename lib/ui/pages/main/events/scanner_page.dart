@@ -5,8 +5,8 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
-import 'package:nexus_mobile_app/models/Event.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
+import 'package:nexus_mobile_app/models/event.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/member_tile.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 

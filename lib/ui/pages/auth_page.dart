@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 import 'dart:async';
 import 'package:nexus_mobile_app/ui/theme.dart';
 

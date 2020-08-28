@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
-import 'package:nexus_mobile_app/ui/pages/AuthPage.dart';
-import 'package:nexus_mobile_app/ui/pages/BottomNavWidget.dart';
-import 'package:nexus_mobile_app/ui/pages/SplashScreen.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
+import 'package:nexus_mobile_app/ui/pages/auth_page.dart';
+import 'package:nexus_mobile_app/ui/pages/bottom_nav_widget.dart';
+import 'package:nexus_mobile_app/ui/pages/splash_screen.dart';
 
 import 'package:flutter/services.dart';
 import 'package:uni_links/uni_links.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
-import 'package:nexus_mobile_app/enum/SearchTypes.dart';
+import 'package:nexus_mobile_app/enum/search_types.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 
 class SearchRepository extends APIRepository {
   final StreamController<List<User>> _searchUserStream = StreamController();

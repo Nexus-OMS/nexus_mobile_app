@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/services/APIRoutes.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
-import 'package:nexus_mobile_app/services/PaginateService.dart';
+import 'package:nexus_mobile_app/services/api_routes.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
+import 'package:nexus_mobile_app/services/paginate_service.dart';
 
 class OrganizationRepository extends APIRepository {
   PaginateService userPager;

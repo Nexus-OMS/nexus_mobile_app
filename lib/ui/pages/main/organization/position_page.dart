@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
-import 'package:nexus_mobile_app/models/Position.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/MemberList.dart';
+import 'package:nexus_mobile_app/models/position.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/member_list.dart';
 
 class PositionPage extends StatefulWidget {
   final Position position;

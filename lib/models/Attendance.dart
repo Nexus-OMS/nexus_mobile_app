@@ -1,7 +1,6 @@
-import 'package:nexus_mobile_app/models/AttendanceType.dart';
-
-import 'User.dart';
-import 'model.dart';
+import 'package:nexus_mobile_app/models/model.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'attendance_type.dart';
 
 class Attendance extends Model {
   @override

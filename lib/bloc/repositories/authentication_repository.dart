@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
-import 'package:nexus_mobile_app/enum/TaskStatus.dart';
-import 'package:nexus_mobile_app/models/User.dart';
-import 'package:nexus_mobile_app/services/APIRoutes.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/enum/task_status.dart';
+import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/services/api_routes.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 
 class AuthenticationRepository extends APIRepository {
   AuthenticationRepository(AuthorizedClient client) : super(client);

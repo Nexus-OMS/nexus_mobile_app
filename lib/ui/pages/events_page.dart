@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/events_list.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/new_event_page.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
-import 'package:nexus_mobile_app/models/Attendance.dart';
-import 'package:nexus_mobile_app/models/Event.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
+import 'package:nexus_mobile_app/models/attendance.dart';
+import 'package:nexus_mobile_app/models/event.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 

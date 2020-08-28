@@ -1,4 +1,4 @@
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/services/authorized_client.dart';
 
 class APIRepository {
   AuthorizedClient client;

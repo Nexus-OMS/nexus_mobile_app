@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
-import 'package:nexus_mobile_app/enum/SearchTypes.dart';
+import 'package:nexus_mobile_app/enum/search_types.dart';
 import 'package:nexus_mobile_app/models/models.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
-import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
+import 'package:nexus_mobile_app/ui/components/tiles/update_tile.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_bar.dart';
 
 class UpdatePage extends StatelessWidget {

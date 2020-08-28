@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
 import 'package:nexus_mobile_app/bloc/repositories/update_repository.dart';
 import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
-import 'package:nexus_mobile_app/ui/pages/main/organization/OrganizationPage.dart';
+import 'package:nexus_mobile_app/ui/pages/main/organization/organization_page.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 
-import 'DashboardPage.dart';
-import 'EventsPage.dart';
-import 'main/UpdatesPage.dart';
+import 'dashboard_page.dart';
+import 'events_page.dart';
+import 'main/updates_page.dart';
 
 class BottomNavWidget extends StatefulWidget {
   @override
