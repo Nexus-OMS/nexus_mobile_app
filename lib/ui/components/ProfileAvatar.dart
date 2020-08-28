@@ -1,4 +1,4 @@
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ProfileAvatar extends StatefulWidget {
@@ -12,8 +12,7 @@ class ProfileAvatar extends StatefulWidget {
 }
 
 class _ProfileAvatarState extends State<ProfileAvatar> {
-  String access_token;
-  Map<String, String> constants;
+  Widget child;
   @override
   void initState() {
     super.initState();
@@ -21,8 +20,8 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   }
 
   void asyncInit() async {
-    constants = await AuthorizedClient.getConstants();
-    access_token = await AuthorizedClient.retrieveAccessToken();
+    child =
+        await context.client.getProfileAvatar(widget.route, widget.initials);
     if (mounted) {
       setState(() {});
     }
@@ -30,19 +29,11 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.route == null || access_token == null || constants == null) {
-      return CircleAvatar(
-        backgroundColor: Color(0xFFEEEEEE),
-        child: Text(widget.initials),
-        radius: 24,
-      );
-    }
-    return CircleAvatar(
-      backgroundImage: AuthorizedClient.getImageProvider(
-          route: widget.route,
-          constants: constants,
-          access_token: access_token),
-      radius: 24,
-    );
+    return child ??
+        CircleAvatar(
+          backgroundColor: Color(0xFFEEEEEE),
+          child: Text(widget.initials),
+          radius: 24,
+        );
   }
 }

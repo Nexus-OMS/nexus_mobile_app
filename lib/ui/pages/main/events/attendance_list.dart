@@ -4,6 +4,7 @@ import 'package:nexus_mobile_app/models/Attendance.dart';
 import 'package:nexus_mobile_app/models/Event.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class AttendanceList extends StatefulWidget {
@@ -18,16 +19,22 @@ enum _AttendanceListState { loading, error, data }
 
 class _AttendancesListState extends State<AttendanceList>
     with AutomaticKeepAliveClientMixin {
+  EventRepository repository;
   List<Attendance> attendances = [];
   _AttendanceListState _state = _AttendanceListState.loading;
 
   @override
   void initState() {
     super.initState();
+    repository = EventRepository(context.client);
     _getAttendances();
     widget.stream.listen((attendance) {
-      attendances.removeWhere((sitem) => sitem.id == attendance.id);
-      attendances.add(attendance);
+      var idx = attendances.indexWhere((sitem) => sitem.id == attendance.id);
+      if (idx != -1) {
+        attendances.replaceRange(idx, idx + 1, [attendance]);
+      } else {
+        attendances.add(attendance);
+      }
       if (mounted) setState(() {});
     });
   }
@@ -36,7 +43,7 @@ class _AttendancesListState extends State<AttendanceList>
     setState(() {
       _state = _AttendanceListState.loading;
     });
-    var temp = await EventRepository.getEventAttendance(widget.event.id);
+    var temp = await repository.getEventAttendance(widget.event.id);
     if (mounted) {
       if (temp != null) {
         setState(() {

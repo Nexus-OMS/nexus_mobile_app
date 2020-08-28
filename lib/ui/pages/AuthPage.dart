@@ -52,7 +52,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void _checkDomain() async {
-    final dom = await AuthorizedClient.getDomain();
+    final dom = await AuthorizedClient.domain;
     domainTextController.text = dom ?? '';
   }
 
@@ -138,8 +138,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                     setState(() {
                       _nextBtnLoading = true;
                     });
-                    await AuthorizedClient.setDomain(domainTextController.text);
-                    await AuthorizedClient.openSignIn();
+                    await Future.wait([
+                      AuthorizedClient.setDomain(domainTextController.text),
+                      AuthorizedClient.openSignIn()
+                    ]);
                     Future.delayed(const Duration(milliseconds: 1000), () {
                       setState(() {
                         _nextBtnLoading = false;

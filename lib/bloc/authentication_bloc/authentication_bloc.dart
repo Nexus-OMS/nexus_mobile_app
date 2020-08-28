@@ -12,10 +12,15 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository repository;
+  final Stream authError;
 
-  AuthenticationBloc({@required this.repository})
+  AuthenticationBloc(this.repository, this.authError)
       : assert(repository != null),
-        super(AuthenticationStateUninitialized());
+        super(AuthenticationStateUninitialized()) {
+    authError.listen((event) {
+      add(AuthenticationEventSignOut());
+    });
+  }
 
   @override
   Stream<AuthenticationState> mapEventToState(

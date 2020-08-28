@@ -5,6 +5,7 @@ import 'package:nexus_mobile_app/models/Event.dart';
 import 'package:nexus_mobile_app/models/EventType.dart';
 import 'package:nexus_mobile_app/models/model.dart';
 import 'package:nexus_mobile_app/ui/components/selection_row.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/typography.dart';
 
 class NewEventPage extends StatefulWidget {
@@ -17,6 +18,7 @@ class NewEventPage extends StatefulWidget {
 enum _NewEventState { none, loading }
 
 class _NewEventPageState extends State<NewEventPage> {
+  EventRepository repository;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -32,6 +34,7 @@ class _NewEventPageState extends State<NewEventPage> {
   @override
   void initState() {
     super.initState();
+    repository = EventRepository(context.client);
     event = Event();
     event.event_type = widget.types[0].id;
     _dateFocus.addListener(() {
@@ -125,7 +128,7 @@ class _NewEventPageState extends State<NewEventPage> {
                         _state = _NewEventState.loading;
                         event.name = _nameController.text;
                       });
-                      var resp = await EventRepository.saveEvent(event);
+                      var resp = await repository.saveEvent(event);
                       if (resp != null) {
                         Navigator.of(context).pop(resp);
                       } else {

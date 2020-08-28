@@ -53,14 +53,14 @@ class UpdateTile extends StatelessWidget {
               )
             ],
           ),
-          onTap: () =>
-              onPressed(update) ??
-              () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UpdatePage(update)));
-              });
+          onTap: onPressed != null
+              ? () => onPressed(update)
+              : () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UpdatePage(update)));
+                });
     } catch (e) {
       print(e);
       return NErrorTile(error_name: 'update');

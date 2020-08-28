@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/enum/SearchTypes.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_page.dart';
 
@@ -36,7 +37,7 @@ class _SearchBarState extends State<SearchBar> {
                   onTapUp: (details) async {
                     final result = await Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => SearchPage(
+                            builder: (context) => SearchPage(context.client,
                                 filters: widget.searchTypes ??
                                     [SearchTypes.users])));
                     widget.searchReturn(result);

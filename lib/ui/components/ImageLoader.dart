@@ -1,40 +1,43 @@
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ImageLoader extends StatefulWidget {
   final String route;
+  final Widget placeholder;
 
-  ImageLoader({Key key, @required this.route}) : super(key: key);
+  ImageLoader({Key key, @required this.route, this.placeholder})
+      : super(key: key);
   @override
   _ImageLoaderState createState() => _ImageLoaderState();
 }
 
 class _ImageLoaderState extends State<ImageLoader> {
-  String access_token;
-  Map<String, String> constants;
-  String initials;
+  Widget child;
+  Widget placeholder;
   @override
   void initState() {
     super.initState();
-    AuthorizedClient.getConstants().then((constants) {
-      setState(() {
-        constants = constants;
-      });
-    });
+    if (widget.placeholder == null) {
+      placeholder = Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      placeholder = widget.placeholder;
+    }
+    asyncInit();
+  }
 
-    AuthorizedClient.retrieveAccessToken().then((token) {
-      setState(() {
-        access_token = token;
-      });
-    });
+  void asyncInit() async {
+    child = await context.client.getImageWidget(widget.route, placeholder);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.route == null || access_token == null || constants == null) {
-      return null;
-    }
-    return AuthorizedClient.getImageWidget(
-        route: widget.route, constants: constants, access_token: access_token);
+    return child ?? widget.placeholder;
   }
 }

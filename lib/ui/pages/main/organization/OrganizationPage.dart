@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.da
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
-import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/components/PageLoadingIndicator.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
@@ -42,7 +42,7 @@ class _OrganizationPageState extends State<OrganizationPage>
         users = [];
       });
     }
-    var raw = await AuthorizedClient.get(route: APIRoutes.routes[User]);
+    var raw = await context.client.get(route: APIRoutes.routes[User]);
     if (mounted) {
       setState(() {
         for (var item in raw) {

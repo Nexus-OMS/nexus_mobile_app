@@ -42,7 +42,6 @@ class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
   }
 
   Stream<UpdateState> _mapRefreshToState(Completer completer) async* {
-    _repository = UpdateRepository();
     try {
       yield UpdateStateLoading();
       final updates = await _repository.all();

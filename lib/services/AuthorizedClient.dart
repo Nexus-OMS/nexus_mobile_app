@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AuthorizedClient {
+  final BuildContext context;
+  AuthorizedClient(this.context);
   //Constants
   static String TOKEN_KEY = 'NEXUS_ACCESS_TOKEN';
   static String USERNAME_KEY = 'NEXUS_USERNAME';
@@ -16,34 +19,64 @@ class AuthorizedClient {
   static String CLIENT_ID_KEY = 'NEXUS_CLIENT_ID';
   static String CLIENT_SECRET_KEY = 'NEXUS_CLIENT_SECRET';
 
-  static StreamController authDoneController = StreamController.broadcast();
+  static FlutterSecureStorage get secure_storage => FlutterSecureStorage();
 
-  static Stream get authDone => authDoneController.stream;
+  static Future<String> get token async =>
+      await secure_storage.read(key: TOKEN_KEY);
+  static Future<String> get username async =>
+      await secure_storage.read(key: USERNAME_KEY);
+  static Future<String> get domain async =>
+      await secure_storage.read(key: DOMAIN_KEY);
+  static Future<String> get client_id async =>
+      await secure_storage.read(key: CLIENT_ID_KEY);
+  static Future<String> get client_secret async =>
+      await secure_storage.read(key: CLIENT_SECRET_KEY);
 
-  static Future<TaskStatus> deauthorize() async {
-    await deleteAccessToken();
-    await deleteUsername();
-    await _getSecureStorage().delete(key: CLIENT_ID_KEY);
-    await _getSecureStorage().delete(key: CLIENT_SECRET_KEY);
+  static Future<String> get uri async =>
+      'https://${await secure_storage.read(key: DOMAIN_KEY)}';
+
+  static Future<Map<String, String>> get headers async =>
+      {HttpHeaders.authorizationHeader: 'Bearer ' + await token};
+  static Future<Map<String, String>> get json_headers async => {
+        ...(await headers),
+        ...{HttpHeaders.acceptHeader: 'application/json'}
+      };
+
+  StreamController authDoneController = StreamController.broadcast();
+  Stream get authDone => authDoneController.stream;
+  StreamController authErrorController = StreamController();
+  Stream get authError => authErrorController.stream;
+
+  static Future<void> deauthorize() async {
+    await Future.wait<TaskStatus>([
+      secureDelete(TOKEN_KEY),
+      secureDelete(USERNAME_KEY),
+      secureDelete(CLIENT_ID_KEY),
+      secureDelete(CLIENT_SECRET_KEY)
+    ]);
+  }
+
+  static Future<TaskStatus> secureDelete(String key) async {
+    try {
+      await secure_storage.delete(key: key);
+    } catch (e) {
+      print(e);
+      return TaskStatus.FAILURE;
+    }
     return TaskStatus.SUCCESS;
   }
 
-  static Future<String> getDomain() async {
-    return await _getSecureStorage().read(key: DOMAIN_KEY);
-  }
-
   static Future<void> setDomain(_domain) async {
-    await _getSecureStorage().write(key: DOMAIN_KEY, value: _domain);
+    await secure_storage.write(key: DOMAIN_KEY, value: _domain);
   }
 
   static Future<void> setClient(String id, String secret) async {
-    await _getSecureStorage().write(key: CLIENT_ID_KEY, value: id);
-    await _getSecureStorage().write(key: CLIENT_SECRET_KEY, value: secret);
+    await secure_storage.write(key: CLIENT_ID_KEY, value: id);
+    await secure_storage.write(key: CLIENT_SECRET_KEY, value: secret);
   }
 
   static Future<void> openSignIn() async {
-    final domain = await getDomain();
-    final url = 'https://$domain/mobile/login';
+    final url = '${await uri}/mobile/login';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -51,23 +84,20 @@ class AuthorizedClient {
     }
   }
 
-  static Future<TaskStatus> authenticate(
-      {String username, String password}) async {
+  Future<TaskStatus> authenticate({String username, String password}) async {
     var client = Client();
-    var cst = await getConstants(username);
     debugPrint(' - Authentication Request - ');
-    debugPrint('\tBase URI: ' + cst['BASE_URI']);
+    debugPrint('\tBase URI: ' + await uri);
 
-    var response =
-        await client.post(cst['BASE_URI'] + '/oauth/token', headers: {
+    var response = await client.post(await uri + '/oauth/token', headers: {
       HttpHeaders.acceptHeader: 'application/json'
     }, body: {
       'username': username,
       'password': password,
-      'grant_type': cst['GRANT_TYPE'],
-      'client_id': cst['CLIENT_ID'],
-      'client_secret': cst['CLIENT_SECRET'],
-      'scope': cst['SCOPE']
+      'grant_type': 'password',
+      'client_id': await client_id,
+      'client_secret': await client_secret,
+      'scope': ''
     }).catchError((e) {
       print(e);
       return TaskStatus.FAILURE;
@@ -77,8 +107,10 @@ class AuthorizedClient {
     debugPrint('\tStatus Code: ' + response.statusCode.toString());
     if (response.statusCode == HttpStatus.ok) {
       Map parsedMap = json.decode(response.body);
-      await storeAccessToken(parsedMap['access_token']);
-      await storeUsername(username);
+      await Future.wait([
+        secureStore(TOKEN_KEY, parsedMap['access_token']),
+        secureStore(USERNAME_KEY, username)
+      ]);
       authDoneController.add('AuthSuccess');
       return TaskStatus.SUCCESS;
     } else {
@@ -86,20 +118,17 @@ class AuthorizedClient {
     }
   }
 
-  static Image getImageWidget(
-      {@required String route,
-      @required Map<String, String> constants,
-      @required String access_token}) {
-    var headers = <String, String>{
-      HttpHeaders.authorizationHeader: 'Bearer ' + access_token
-    };
+  Future<Widget> getImageWidget(String route, Widget placeholder) async {
     try {
-      var net =
-          NetworkImage(constants['BASE_URI'] + route, headers: headers);
-      return Image(
-        image: net,
-        fit: BoxFit.cover,
-        alignment: Alignment(0, -1),
+      return CachedNetworkImage(
+        imageUrl: await uri + route,
+        httpHeaders: {HttpHeaders.authorizationHeader: 'Bearer ' + await token},
+        placeholder: (context, url) => placeholder,
+        errorWidget: (context, url, error) => CircleAvatar(
+          backgroundColor: Color(0xFFEEEEEE),
+          child: Text('Error loading image.'),
+          radius: 24,
+        ),
       );
     } catch (error) {
       print(error.toString());
@@ -107,24 +136,25 @@ class AuthorizedClient {
     }
   }
 
-  static ImageProvider getImageProvider(
-      {@required String route,
-      @required Map<String, String> constants,
-      @required String access_token}) {
-    var headers = <String, String>{
-      HttpHeaders.authorizationHeader: 'Bearer ' + access_token
-    };
-    try {
-      var net =
-          NetworkImage(constants['BASE_URI'] + route, headers: headers);
-      return net;
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
+  Future<Widget> getProfileAvatar(String route, String initials) async {
+    return CachedNetworkImage(
+      imageUrl: await uri + route,
+      httpHeaders: {HttpHeaders.authorizationHeader: 'Bearer ' + await token},
+      imageBuilder: (context, imageProvider) => CircleAvatar(
+        backgroundColor: Color(0xFFEEEEEE),
+        backgroundImage: imageProvider,
+        radius: 24,
+      ),
+      placeholder: (context, url) => CircularProgressIndicator(),
+      errorWidget: (context, url, error) => CircleAvatar(
+        backgroundColor: Color(0xFFEEEEEE),
+        child: Text(initials),
+        radius: 24,
+      ),
+    );
   }
 
-  static dynamic processResponse(Response response) {
+  dynamic processResponse(Response response) {
     switch (response.statusCode) {
       case HttpStatus.ok:
         {
@@ -139,6 +169,15 @@ class AuthorizedClient {
       case HttpStatus.unauthorized:
         {
           debugPrint('== Unauthorized ==');
+          showDialog(
+              context: context,
+              builder: (_context) {
+                return AlertDialog(
+                  title: Text('Signed Out'),
+                  content: Text(
+                      'An authorization error has occurred and you have been logged out.\nIf this is a reoccuring issue please contact the developers.'),
+                );
+              });
           deauthorize();
         }
         break;
@@ -151,121 +190,41 @@ class AuthorizedClient {
   }
 
   // Should have a catchError block whenever this is called.
-  static Future<dynamic> get({String route}) async {
+  Future<dynamic> get({String route}) async {
     var client = Client();
-    var token = await retrieveAccessToken();
-    if (token == null) return null;
-    var cst = await getConstants();
-    var headers = <String, String>{
-      HttpHeaders.acceptHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Bearer ' + token
-    };
     return client
-        .get(cst['BASE_URI'] + route, headers: headers)
+        .get(await uri + route, headers: await json_headers)
         .then((response) {
       return processResponse(response);
     }).timeout(Duration(seconds: 6));
   }
 
   // Should have a catchError block whenever this is called.
-  static Future<dynamic> post(
-      {String route, Map<String, dynamic> content}) async {
+  Future<dynamic> post({String route, Map<String, dynamic> content}) async {
     var client = Client();
-    var token = await retrieveAccessToken();
-    if (token == null) return null;
-    var cst = await getConstants();
-    var headers = <String, String>{
-      HttpHeaders.acceptHeader: 'application/json',
-      HttpHeaders.authorizationHeader: 'Bearer ' + token
-    };
     var _content = <String, dynamic>{};
     content.forEach((key, value) {
       if (value != null && value != 'null') _content[key] = value;
     });
     return client
-        .post(cst['BASE_URI'] + route, headers: headers, body: _content)
+        .post(await uri + route, headers: await json_headers, body: _content)
         .then((response) {
       print(response.body);
       return processResponse(response);
     }).timeout(Duration(seconds: 6));
   }
 
-  static Future<Map<String, String>> getConstants([String username]) async {
-    final clientId = await _getSecureStorage().read(key: CLIENT_ID_KEY);
-    final secret = await _getSecureStorage().read(key: CLIENT_SECRET_KEY);
-    var headers = <String, String>{
-      'BASE_URI': 'https://' + await getDomain(),
-      'CLIENT_ID': clientId,
-      'CLIENT_SECRET': secret,
-      'GRANT_TYPE': 'password',
-      'SCOPE': ''
-    };
-    return headers;
-  }
-
-  static Future<Map<String, String>> getHeaders() async {
-    return {
-      HttpHeaders.authorizationHeader: 'Bearer ' + await retrieveAccessToken()
-    };
-  }
-
-  static Future<bool> checkConnection() async {
+  Future<bool> checkConnection() async {
     return null != await (Connectivity().checkConnectivity());
   }
 
   // KeyChain Functions
-  static FlutterSecureStorage _getSecureStorage() {
-    return FlutterSecureStorage();
-  }
 
-  static Future<String> retrieveUsername() async {
-    return await _getSecureStorage().read(key: USERNAME_KEY);
-  }
-
-  static Future<TaskStatus> storeUsername(String username) async {
-    debugPrint('\tStoring Username: ' + username);
+  static Future<TaskStatus> secureStore(String key, String value) async {
     try {
-      await deleteUsername();
-      await _getSecureStorage().write(key: USERNAME_KEY, value: username);
+      await secureDelete(key);
+      await secure_storage.write(key: key, value: value);
     } catch (e) {
-      print(e);
-      return TaskStatus.FAILURE;
-    }
-    return TaskStatus.SUCCESS;
-  }
-
-  static Future<TaskStatus> deleteUsername() async {
-    try {
-      await _getSecureStorage().delete(key: USERNAME_KEY);
-    } catch (e) {
-      print(e);
-      return TaskStatus.FAILURE;
-    }
-    return TaskStatus.SUCCESS;
-  }
-
-  static Future<String> retrieveAccessToken() async {
-    var ret = await _getSecureStorage().read(key: TOKEN_KEY);
-    return ret;
-  }
-
-  static Future<TaskStatus> storeAccessToken(String accessToken) async {
-    debugPrint('\tStoring Access Token: ' + accessToken);
-    try {
-      await deleteAccessToken();
-      await _getSecureStorage().write(key: TOKEN_KEY, value: accessToken);
-    } catch (e) {
-      print(e);
-      return TaskStatus.FAILURE;
-    }
-    return TaskStatus.SUCCESS;
-  }
-
-  static Future<TaskStatus> deleteAccessToken() async {
-    try {
-      await _getSecureStorage().delete(key: TOKEN_KEY);
-    } catch (e) {
-      print(e);
       return TaskStatus.FAILURE;
     }
     return TaskStatus.SUCCESS;

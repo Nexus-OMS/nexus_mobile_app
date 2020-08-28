@@ -1,17 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
 import 'package:nexus_mobile_app/models/Update.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/services/PaginateService.dart';
 
-class UpdateRepository {
+class UpdateRepository extends APIRepository {
   PaginateService pager;
   List<Update> updates = [];
 
-  UpdateRepository() {
-    pager = PaginateService(route: APIRoutes.routes[Update] + '/published');
+  UpdateRepository(AuthorizedClient client) : super(client) {
+    pager =
+        PaginateService(client, route: APIRoutes.routes[Update] + '/published');
   }
 
   Future<List<Update>> page() async {
@@ -25,7 +27,7 @@ class UpdateRepository {
   }
 
   Future<Update> get(int id) async {
-    var update = Update.fromMap(await AuthorizedClient.get(
+    var update = Update.fromMap(await client.get(
         route: APIRoutes.routes[Update] + '/' + id.toString()));
     updates.add(update);
     return update;
@@ -33,9 +35,9 @@ class UpdateRepository {
 
   Future<List<Update>> all() async {
     try {
-      var _updates = [];
-      var raw_levels = await AuthorizedClient.get(
-          route: APIRoutes.routes[Update] + '/published');
+      var _updates = <Update>[];
+      var raw_levels =
+          await client.get(route: APIRoutes.routes[Update] + '/published');
       for (var item in raw_levels) {
         _updates.removeWhere((sitem) => sitem.id == item['o_id']);
         _updates.add(Update.fromMap(item));

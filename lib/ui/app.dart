@@ -49,7 +49,7 @@ class _AppState extends State<App> {
 
     // Attach a second listener to the stream
     getUriLinksStream().listen((Uri uri) async {
-      final host = await AuthorizedClient.getDomain();
+      final host = await AuthorizedClient.domain;
       final authed = await BlocProvider.of<AuthenticationBloc>(context)
           .repository
           .isAuthenticated;

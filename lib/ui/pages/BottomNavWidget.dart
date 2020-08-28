@@ -7,6 +7,7 @@ import 'package:nexus_mobile_app/bloc/update_bloc/update_bloc.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/OrganizationPage.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 
 import 'DashboardPage.dart';
 import 'EventsPage.dart';
@@ -18,30 +19,44 @@ class BottomNavWidget extends StatefulWidget {
 }
 
 class _BottomNavWidgetState extends State<BottomNavWidget> {
+  PageController _pageController;
   int _selectedIndex = 0;
-  final _widgetOptions = [
-    DashboardPage(),
-    OrganizationPage(),
-    RepositoryProvider(
-      create: (context) => EventRepository(),
-      child: EventsPage(),
-    ),
-    BlocProvider(
-        create: (context) => UpdateBloc(repository: UpdateRepository()),
-        child: UpdatesPage())
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
+    _pageController.addListener(() {
+      if (mounted) {
+        setState(() {
+          _selectedIndex = _pageController.page.toInt();
+        });
+      }
+    });
+  }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageController.animateToPage(index,
+        duration: Duration(microseconds: 500), curve: Curves.easeInCubic);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+        body: PageView(
+          controller: _pageController,
+          children: List<Widget>.from([
+            DashboardPage(),
+            OrganizationPage(),
+            RepositoryProvider(
+              create: (context) => EventRepository(context.client),
+              child: EventsPage(),
+            ),
+            BlocProvider(
+                create: (context) =>
+                    UpdateBloc(repository: UpdateRepository(context.client)),
+                child: UpdatesPage())
+          ]),
         ),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(canvasColor: NexusTheme.primary),

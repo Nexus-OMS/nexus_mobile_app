@@ -5,9 +5,9 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
-import 'package:nexus_mobile_app/models/Attendance.dart';
 import 'package:nexus_mobile_app/models/Event.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class ScannerPage extends StatefulWidget {
@@ -28,11 +28,12 @@ class _ScannerPageState extends State<ScannerPage> {
   CameraController controller;
   final GlobalKey _canvasKey = GlobalKey();
   Set<String> detections = {};
-  List<Attendance> attendance = [];
+  EventRepository repository;
 
   @override
   void initState() {
     super.initState();
+    repository = EventRepository(context.client);
     _initCamera();
   }
 
@@ -89,11 +90,11 @@ class _ScannerPageState extends State<ScannerPage> {
           },
         ))
       ..show(context);
-    await EventRepository.saveAttendance(widget.event.id, user_uid: uid)
+    await repository
+        .saveAttendance(widget.event.id, user_uid: uid)
         .then((record) {
       if (record != null) {
         widget.onScan(record);
-        attendance.add(record);
         Flushbar(
             flushbarPosition: FlushbarPosition.TOP,
             backgroundColor: NexusTheme.success,

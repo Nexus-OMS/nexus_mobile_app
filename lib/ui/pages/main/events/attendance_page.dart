@@ -10,6 +10,7 @@ import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/attendance_list.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/scanner_page.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_page.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 
 class AttendancePage extends StatefulWidget {
   final Event event;
@@ -19,8 +20,16 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
+  EventRepository repository;
   final StreamController<Attendance> _controller =
       StreamController<Attendance>();
+
+  @override
+  void initState() {
+    super.initState();
+    repository = EventRepository(context.client);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +44,11 @@ class _AttendancePageState extends State<AttendancePage> {
         child: Icon(MdiIcons.qrcode),
         onPressed: () async {
           var att = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                ScannerPage((Attendance att) {}, widget.event),
+            builder: (context) => ScannerPage((Attendance att) {
+              if (att != null && att is Attendance) {
+                _controller.add(att);
+              }
+            }, widget.event),
           ));
           if (att != null && att is Attendance) {
             _controller.add(att);
@@ -59,6 +71,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     var user =
                         await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => SearchPage(
+                        context.client,
                         filters: [SearchTypes.users],
                       ),
                     ));
@@ -73,8 +86,7 @@ class _AttendancePageState extends State<AttendancePage> {
 
   Future<void> _addAttendance(User user) async {
     Attendance record;
-    record =
-        await EventRepository.saveAttendance(widget.event.id, user_id: user.id);
+    record = await repository.saveAttendance(widget.event.id, user_id: user.id);
     if (record != null) {
       _controller.add(record);
     }

@@ -62,7 +62,7 @@ class User extends APIModel {
     school = map['school'];
     major = map['major'];
     hometown = map['hometown'];
-    permissions = [];
+    permissions = <Permission>[];
     if (map['permissions'] != null) {
       try {
         for (var perm in map['permissions']) {

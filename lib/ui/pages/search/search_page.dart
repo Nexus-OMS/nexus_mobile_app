@@ -3,6 +3,7 @@ import 'package:nexus_mobile_app/bloc/repositories/search_repository.dart';
 import 'package:nexus_mobile_app/enum/SearchTypes.dart';
 import 'package:nexus_mobile_app/models/User.dart';
 import 'package:nexus_mobile_app/models/models.dart';
+import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/MemberTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/UpdateTile.dart';
 import 'package:nexus_mobile_app/utils/debouncer.dart';
@@ -11,14 +12,15 @@ import '../../theme.dart';
 
 class SearchPage extends StatefulWidget {
   final List<SearchTypes> filters;
+  AuthorizedClient client;
 
-  SearchPage({this.filters});
+  SearchPage(this.client, {this.filters});
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  SearchRepository repository = SearchRepository();
+  SearchRepository repository;
   TextEditingController _textFieldController;
   final Debouncer onSearchDebouncer =
       Debouncer(delay: Duration(milliseconds: 500));
@@ -30,6 +32,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    repository = SearchRepository(widget.client);
     _textFieldController = TextEditingController();
     _textFieldController.addListener(() {
       onSearchDebouncer.debounce(() {
@@ -99,7 +102,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   List<Widget> buildResults() {
-    var sections = [];
+    var sections = <Widget>[];
     if (widget.filters != null) {
       for (var type in widget.filters) {
         switch (type) {

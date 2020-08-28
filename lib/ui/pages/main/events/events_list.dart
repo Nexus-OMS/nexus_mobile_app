@@ -7,6 +7,7 @@ import 'package:nexus_mobile_app/models/EventType.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/NErrorTile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/attendance_page.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
 class EventsList extends StatefulWidget {
@@ -22,11 +23,13 @@ enum _EventListState { loading, error, data }
 class _EventsListState extends State<EventsList>
     with AutomaticKeepAliveClientMixin {
   List<Event> events = [];
+  EventRepository repository;
   _EventListState _state = _EventListState.loading;
 
   @override
   void initState() {
     super.initState();
+    repository = EventRepository(context.client);
     _getEvents();
     widget.stream.listen((event) {
       if (event.event_type == widget.type.id) {
@@ -40,7 +43,7 @@ class _EventsListState extends State<EventsList>
     setState(() {
       _state = _EventListState.loading;
     });
-    var temp = await EventRepository.getEvents(widget.type);
+    var temp = await repository.getEvents(widget.type);
     if (temp != null) {
       setState(() {
         temp.sort((a, b) => a.date.isAfter(b.date) ? 1 : 0);
@@ -108,7 +111,7 @@ class EventTile extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.all(1),
                             child: Text(
-                              event.formattedDate,
+                              event.name ?? 'N/A',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline6
@@ -122,7 +125,7 @@ class EventTile extends StatelessWidget {
                               Padding(
                                   padding: EdgeInsets.all(1),
                                   child: Text(
-                                    event.name ?? 'N/A',
+                                    event.formattedDate,
                                     style: Theme.of(context).textTheme.caption,
                                     maxLines: 1,
                                   )),

@@ -6,16 +6,9 @@ import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.da
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/authentication_repository.dart';
 import 'package:nexus_mobile_app/bloc/repositories/organization_repository.dart';
-import 'package:nexus_mobile_app/providers/AttendanceProvider.dart';
-import 'package:nexus_mobile_app/providers/AttendanceTypeProvider.dart';
-import 'package:nexus_mobile_app/providers/EventProvider.dart';
-import 'package:nexus_mobile_app/providers/EventTypeProvider.dart';
-import 'package:nexus_mobile_app/providers/LevelProvider.dart';
-import 'package:nexus_mobile_app/providers/TermProvider.dart';
-import 'package:nexus_mobile_app/providers/UserProvider.dart';
+import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/ui/app.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,53 +18,37 @@ void main() async {
   runApp(NexusApp());
 }
 
-class NexusApp extends StatelessWidget {
-  NexusApp();
+class NexusApp extends StatefulWidget {
+  @override
+  _NexusAppState createState() => _NexusAppState();
+}
+
+class _NexusAppState extends State<NexusApp> {
+  AuthorizedClient client;
+  @override
+  void initState() {
+    super.initState();
+    client = AuthorizedClient(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) {
-            final _authRepository =
-                AuthenticationRepository();
-            return AuthenticationBloc(repository: _authRepository);
-          }),
-          BlocProvider(create: (context) {
-            final _orgRepository =
-                OrganizationRepository();
-            return OrganizationBloc(repository: _orgRepository);
-          }),
-        ],
-        child: MultiProvider(
-          providers: [
-            ChangeNotifierProvider<AttendanceProvider>(
-              create: (_) => AttendanceProvider(),
-            ),
-            ChangeNotifierProvider<AttendanceTypeProvider>(
-              create: (_) => AttendanceTypeProvider(),
-            ),
-            ChangeNotifierProvider<EventProvider>(
-              create: (_) => EventProvider(),
-            ),
-            ChangeNotifierProvider<EventTypeProvider>(
-              create: (_) => EventTypeProvider(),
-            ),
-            ChangeNotifierProvider<UserProvider>(
-              create: (_) => UserProvider(),
-            ),
-            ChangeNotifierProvider<TermProvider>(
-              create: (_) => TermProvider(),
-            ),
-            ChangeNotifierProvider<LevelProvider>(
-              create: (_) => LevelProvider(),
-            )
-          ],
-          child: MaterialApp(
-              title: 'Nexus',
-              theme: NexusTheme.light(context),
-              darkTheme: NexusTheme.dark(context),
-              home: App()),
+    return MaterialApp(
+        title: 'Nexus',
+        theme: NexusTheme.light(context),
+        darkTheme: NexusTheme.dark(context),
+        home: RepositoryProvider<AuthorizedClient>(
+          create: (context) => client,
+          child: MultiBlocProvider(providers: [
+            BlocProvider(create: (context) {
+              final _authRepository = AuthenticationRepository(client);
+              return AuthenticationBloc(_authRepository, client.authError);
+            }),
+            BlocProvider(create: (context) {
+              final _orgRepository = OrganizationRepository(client);
+              return OrganizationBloc(repository: _orgRepository);
+            }),
+          ], child: App()),
         ));
   }
 }

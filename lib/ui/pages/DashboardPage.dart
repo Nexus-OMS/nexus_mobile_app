@@ -11,6 +11,7 @@ import 'package:nexus_mobile_app/ui/components/ProfileAvatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/SkeletonTile.dart';
 import 'package:nexus_mobile_app/ui/typography.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -33,10 +34,10 @@ class _DashboardPageState extends State<DashboardPage>
   Future<void> _getAnnouncements() async {
     setState(() {
       _announcementsState = _AnnouncementsState.uninitialized;
-      announcements = [];
+      announcements = <Announcement>[];
     });
     var raw_announcements =
-        await AuthorizedClient.get(route: APIRoutes.routes[Announcement]);
+        await context.client.get(route: APIRoutes.routes[Announcement]);
     setState(() {
       for (var item in raw_announcements) {
         if (!item['title'].contains('COW')) {
@@ -95,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Widget _announcementsBuilder(context) {
-    var children = [];
+    var children = <Widget>[];
     if (_announcementsState == _AnnouncementsState.uninitialized) {
       for (var _ in List(4)) {
         children.add(SkeletonTile(height: 24));
@@ -123,7 +124,7 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Widget _documentsBuilder(context) {
-    var children = [];
+    var children = <Widget>[];
     for (var doc in documents) {
       children.add(Builder(
         builder: (context) {
@@ -205,8 +206,8 @@ class _DocumentTileState extends State<DocumentTile> {
 
   void _getDate() async {
     try {
-      var raw = await AuthorizedClient.get(
-          route: '/api/v1/f/pdf/${widget.name}.pdf/metadata');
+      var raw = await context.client
+          .get(route: '/api/v1/f/pdf/${widget.name}.pdf/metadata');
       setState(() {
         date = raw['last_modified'];
         _state = _DocumentState.data;
@@ -230,10 +231,10 @@ class _DocumentTileState extends State<DocumentTile> {
         child: Card(
             child: InkWell(
                 onTap: () async {
-                  final domain = await AuthorizedClient.getDomain();
+                  final domain = await AuthorizedClient.domain;
                   final url = 'https://$domain/api/v1/f/pdf/${widget.name}.pdf';
                   final path = (await _findLocalPath());
-                  final headers = await AuthorizedClient.getHeaders();
+                  final headers = await AuthorizedClient.headers;
                   await FlutterDownloader.enqueue(
                     url: url,
                     headers: headers,
@@ -244,8 +245,7 @@ class _DocumentTileState extends State<DocumentTile> {
                         true, // click on notification to open downloaded file (for Android)
                   );
                   if (await canLaunch(url)) {
-                    await launch(url,
-                        headers: await AuthorizedClient.getHeaders());
+                    await launch(url, headers: await AuthorizedClient.headers);
                   } else {
                     throw 'Could not launch $url';
                   }

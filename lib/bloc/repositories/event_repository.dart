@@ -1,17 +1,18 @@
 import 'dart:async';
 
+import 'package:nexus_mobile_app/bloc/repositories/APIRepository.dart';
 import 'package:nexus_mobile_app/models/models.dart';
 import 'package:nexus_mobile_app/services/APIRoutes.dart';
 import 'package:nexus_mobile_app/services/AuthorizedClient.dart';
 import 'package:nexus_mobile_app/services/PaginateService.dart';
 
-class EventRepository {
+class EventRepository extends APIRepository {
   PaginateService eventPager;
   List<Event> events = [];
   List<EventType> types = [];
 
-  EventRepository() {
-    eventPager = PaginateService(route: APIRoutes.routes[Event]);
+  EventRepository(AuthorizedClient client) : super(client) {
+    eventPager = PaginateService(client, route: APIRoutes.routes[Event]);
   }
 
   bool nullEmpty(dynamic obj) {
@@ -20,7 +21,7 @@ class EventRepository {
 
   Future<List<Event>> pageEvents({String query, bool refresh}) async {
     if (refresh ?? false) {
-      eventPager = PaginateService(route: APIRoutes.routes[Event]);
+      eventPager = PaginateService(client, route: APIRoutes.routes[Event]);
       events = [];
     }
     var raw_values = query != null
@@ -34,8 +35,8 @@ class EventRepository {
     return events;
   }
 
-  static Future<List<Attendance>> getEventAttendance(int id) async {
-    var event = await AuthorizedClient.get(
+  Future<List<Attendance>> getEventAttendance(int id) async {
+    var event = await client.get(
         route: '${APIRoutes.routes[Event]}/${id.toString()}/attendance');
     var attendance = <Attendance>[];
     if (event != null) {
@@ -47,9 +48,9 @@ class EventRepository {
     return event;
   }
 
-  static Future<Event> saveEvent(Event event) async {
+  Future<Event> saveEvent(Event event) async {
     try {
-      var resp = await AuthorizedClient.post(
+      var resp = await client.post(
           route: APIRoutes.routes[Event], content: event.toMap());
       resp['event_type'] = resp['event_type']['o_id'];
       resp['term'] = resp['term']['term'];
@@ -59,7 +60,7 @@ class EventRepository {
     }
   }
 
-  static Future<Attendance> saveAttendance(int event_id,
+  Future<Attendance> saveAttendance(int event_id,
       {int user_id, String user_uid, int attendance_type = 4}) async {
     try {
       if (user_uid != null) {
@@ -70,7 +71,7 @@ class EventRepository {
           'event_id': event_id.toString(),
           'attendance_type': attendance_type.toString()
         };
-        var resp = await AuthorizedClient.post(
+        var resp = await client.post(
             route: APIRoutes.routes[Attendance] + '/storebyuid',
             content: content);
         return Attendance.fromMap(resp);
@@ -80,7 +81,7 @@ class EventRepository {
           'event_id': event_id.toString(),
           'attendance_type': attendance_type.toString()
         };
-        var resp = await AuthorizedClient.post(
+        var resp = await client.post(
             route: APIRoutes.routes[Attendance], content: content);
         return Attendance.fromMap(resp);
       }
@@ -89,11 +90,11 @@ class EventRepository {
     }
   }
 
-  static Future<List<Event>> getEvents(EventType type) async {
-    var _events = [];
+  Future<List<Event>> getEvents(EventType type) async {
+    var _events = <Event>[];
     try {
-      var raw_values = await AuthorizedClient.get(
-          route: '/api/v1/self/events?type=${type.id}');
+      var raw_values =
+          await client.get(route: '/api/v1/self/events?type=${type.id}');
       for (var item in raw_values) {
         var event = Event.fromMap(item);
         _events.removeWhere((sitem) => sitem.id == event.id);
@@ -107,8 +108,7 @@ class EventRepository {
 
   Future<List<EventType>> getEventTypes() async {
     try {
-      var raw_values =
-          await AuthorizedClient.get(route: APIRoutes.routes[EventType]);
+      var raw_values = await client.get(route: APIRoutes.routes[EventType]);
       for (var item in raw_values) {
         var event = EventType.fromMap(item);
         types.removeWhere((sitem) => sitem.id == event.id);

@@ -23,7 +23,7 @@ class Event extends APIModel {
     date = DateTime.parse(map['date']);
     term = map['term'] is String ? int.parse(map['term']) : map['term'];
     name = map['name'];
-    attendance = [];
+    attendance = <Attendance>[];
     for (var att in map['attendance'] ?? <Attendance>[]) {
       attendance.add(Attendance.fromMap(att));
     }
