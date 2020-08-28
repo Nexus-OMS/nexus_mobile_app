@@ -6,7 +6,7 @@ import 'package:nexus_mobile_app/models/event.dart';
 import 'package:nexus_mobile_app/models/event_type.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/skeleton_tile.dart';
-import 'package:nexus_mobile_app/ui/pages/main/events/attendance_page.dart';
+import 'package:nexus_mobile_app/ui/pages/main/events/attendance/attendance_page.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/theme.dart';
 
@@ -148,8 +148,9 @@ class EventTile extends StatelessWidget {
                   as AuthenticationStateAuthenticated)
               .user;
           if (user.canManageRecords()) {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => AttendancePage(event)));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (_context) =>
+                    context.clientProvider(AttendancePage(event))));
           }
         });
   }

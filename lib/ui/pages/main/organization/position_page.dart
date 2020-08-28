@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/organization_bloc/organization_bloc.dart';
 import 'package:nexus_mobile_app/models/position.dart';
 import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/member_list.dart';
 
 class PositionPage extends StatefulWidget {
@@ -51,7 +52,7 @@ class _PositionPageState extends State<PositionPage> {
   Widget _buildSubordinates(List<Position> positions) {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
-      (BuildContext context, int index) {
+      (BuildContext sliverContext, int index) {
         return Container(
           padding: EdgeInsets.all(8.0),
           child: Padding(
@@ -62,7 +63,11 @@ class _PositionPageState extends State<PositionPage> {
                 padding: EdgeInsets.all(8.0),
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PositionPage(positions[index])));
+                      builder: (_context) => context.clientProvider(
+                          BlocProvider(
+                              create: (__context) =>
+                                  BlocProvider.of<OrganizationBloc>(context),
+                              child: PositionPage(positions[index])))));
                 },
                 child: Row(
                   children: <Widget>[

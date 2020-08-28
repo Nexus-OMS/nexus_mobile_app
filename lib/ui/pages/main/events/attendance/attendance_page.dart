@@ -7,8 +7,8 @@ import 'package:nexus_mobile_app/enum/search_types.dart';
 import 'package:nexus_mobile_app/models/attendance.dart';
 import 'package:nexus_mobile_app/models/event.dart';
 import 'package:nexus_mobile_app/models/user.dart';
-import 'package:nexus_mobile_app/ui/pages/main/events/attendance_list.dart';
-import 'package:nexus_mobile_app/ui/pages/main/events/scanner_page.dart';
+import 'package:nexus_mobile_app/ui/pages/main/events/attendance/attendance_list.dart';
+import 'package:nexus_mobile_app/ui/pages/main/events/attendance/scanner_page.dart';
 import 'package:nexus_mobile_app/ui/pages/search/search_page.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 
@@ -44,12 +44,13 @@ class _AttendancePageState extends State<AttendancePage> {
         child: Icon(MdiIcons.qrcode),
         onPressed: () async {
           var att = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ScannerPage((Attendance att) {
-              if (att != null && att is Attendance) {
-                _controller.add(att);
-              }
-            }, widget.event),
-          ));
+              builder: (_context) => context.clientProvider(
+                    ScannerPage((Attendance att) {
+                      if (att != null && att is Attendance) {
+                        _controller.add(att);
+                      }
+                    }, widget.event),
+                  )));
           if (att != null && att is Attendance) {
             _controller.add(att);
           }
@@ -70,11 +71,12 @@ class _AttendancePageState extends State<AttendancePage> {
                   onPressed: () async {
                     var user =
                         await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SearchPage(
-                        context.client,
-                        filters: [SearchTypes.users],
-                      ),
-                    ));
+                            builder: (_context) => context.clientProvider(
+                                  SearchPage(
+                                    context.client,
+                                    filters: [SearchTypes.users],
+                                  ),
+                                )));
                     if (user != null) {
                       _addAttendance(user);
                     }

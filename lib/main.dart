@@ -18,12 +18,23 @@ void main() async {
   runApp(NexusApp());
 }
 
-class NexusApp extends StatefulWidget {
+class NexusApp extends StatelessWidget {
   @override
-  _NexusAppState createState() => _NexusAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Nexus',
+        theme: NexusTheme.light(context),
+        darkTheme: NexusTheme.dark(context),
+        home: ProviderWidget());
+  }
 }
 
-class _NexusAppState extends State<NexusApp> {
+class ProviderWidget extends StatefulWidget {
+  @override
+  _ProviderWidgetState createState() => _ProviderWidgetState();
+}
+
+class _ProviderWidgetState extends State<ProviderWidget> {
   AuthorizedClient client;
   @override
   void initState() {
@@ -33,22 +44,17 @@ class _NexusAppState extends State<NexusApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Nexus',
-        theme: NexusTheme.light(context),
-        darkTheme: NexusTheme.dark(context),
-        home: RepositoryProvider<AuthorizedClient>(
-          create: (context) => client,
-          child: MultiBlocProvider(providers: [
-            BlocProvider(create: (context) {
-              final _authRepository = AuthenticationRepository(client);
-              return AuthenticationBloc(_authRepository, client.authError);
-            }),
-            BlocProvider(create: (context) {
-              final _orgRepository = OrganizationRepository(client);
-              return OrganizationBloc(repository: _orgRepository);
-            }),
-          ], child: App()),
-        ));
+    return RepositoryProvider<AuthorizedClient>(
+        create: (context) => client,
+        child: MultiBlocProvider(providers: [
+          BlocProvider(create: (context) {
+            final _authRepository = AuthenticationRepository(client);
+            return AuthenticationBloc(_authRepository, client.authError);
+          }),
+          BlocProvider(create: (context) {
+            final _orgRepository = OrganizationRepository(client);
+            return OrganizationBloc(repository: _orgRepository);
+          }),
+        ], child: App()));
   }
 }

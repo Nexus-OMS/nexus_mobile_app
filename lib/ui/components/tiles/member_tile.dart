@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nexus_mobile_app/models/user.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/components/profile_avatar.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
 import 'package:nexus_mobile_app/ui/pages/main/organization/profile_page.dart';
@@ -61,14 +62,15 @@ class MemberTile extends StatelessWidget {
                   )
                 ],
               )),
-          onTap: () =>
-              onPressed(user) ??
-              () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfilePage(user.id)));
-              });
+          onTap: onPressed != null
+              ? () => onPressed(user)
+              : () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_context) =>
+                              context.clientProvider(ProfilePage(user.id))));
+                });
     } catch (e, stack) {
       print(e);
       print(stack);

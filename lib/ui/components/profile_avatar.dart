@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 class ProfileAvatar extends StatefulWidget {
   final String initials;
   final String route;
+  final double size;
 
-  ProfileAvatar({Key key, @required this.initials, @required this.route})
+  ProfileAvatar(
+      {Key key, @required this.initials, @required this.route, this.size})
       : super(key: key);
   @override
   _ProfileAvatarState createState() => _ProfileAvatarState();
@@ -20,8 +22,8 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
   }
 
   void asyncInit() async {
-    child =
-        await context.client.getProfileAvatar(widget.route, widget.initials);
+    child = await context.client.getProfileAvatar(widget.route, widget.initials,
+        size: widget.size ?? 24);
     if (mounted) {
       setState(() {});
     }
@@ -33,7 +35,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
         CircleAvatar(
           backgroundColor: Color(0xFFEEEEEE),
           child: Text(widget.initials),
-          radius: 24,
+          radius: widget.size ?? 24,
         );
   }
 }

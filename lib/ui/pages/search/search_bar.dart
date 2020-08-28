@@ -30,21 +30,22 @@ class _SearchBarState extends State<SearchBar> {
       child: Center(
         child: Card(
           elevation: widget.floating ? 4 : 0,
-          child: Container(
-            height: kToolbarHeight,
-            child: Center(
-              child: GestureDetector(
-                  onTapUp: (details) async {
-                    final result = await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => SearchPage(context.client,
+          child: InkWell(
+              onTap: () async {
+                final result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_context) => context.clientProvider(
+                            SearchPage(context.client,
                                 filters: widget.searchTypes ??
-                                    [SearchTypes.users])));
-                    widget.searchReturn(result);
-                  },
-                  child: Icon(Icons.search)),
-            ),
-          ),
+                                    [SearchTypes.users]))));
+                widget.searchReturn(result);
+              },
+              child: Container(
+                height: kToolbarHeight,
+                child: Center(
+                  child: Icon(Icons.search),
+                ),
+              )),
         ),
       ),
     );

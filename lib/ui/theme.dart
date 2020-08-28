@@ -137,7 +137,7 @@ class NexusTheme {
       caption: GoogleFonts.openSans(textStyle: textTheme?.caption)
           .copyWith(color: dark ? textLight : darkGrey),
       button: GoogleFonts.sourceSansPro(textStyle: textTheme?.button)
-          .copyWith(color: textLight),
+          .copyWith(color: textLight, fontSize: 18),
       subtitle2: GoogleFonts.openSans(textStyle: textTheme?.subtitle2)
           .copyWith(color: dark ? textLight : darkGrey),
       overline: GoogleFonts.sourceSansPro(textStyle: textTheme?.overline)

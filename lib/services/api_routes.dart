@@ -3,7 +3,7 @@ import 'package:nexus_mobile_app/models/models.dart';
 class APIRoutes {
   static Map<Type, String> routes = {
     User: '/api/v1/users',
-    Update: '/api/v1/updat', // fix to updates
+    Update: '/api/v1/updates',
     Unit: '/api/v1/units',
     Announcement: '/api/v1/announcements',
     Attendance: '/api/v1/attendance',

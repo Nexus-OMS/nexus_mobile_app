@@ -102,9 +102,9 @@ class _OrganizationPageState extends State<OrganizationPage>
                   label: Text(state.levels[index].name),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MemberPage(
+                        builder: (context) => context.clientProvider(MemberPage(
                             state.levels[index].name,
-                            'level=${state.levels[index].id}')));
+                            'level=${state.levels[index].id}'))));
                   },
                 ));
           },
@@ -129,7 +129,10 @@ class _OrganizationPageState extends State<OrganizationPage>
           padding: EdgeInsets.all(8.0),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PositionPage(state.positions)));
+                builder: (_context) => context.clientProvider(BlocProvider(
+                    create: (__context) =>
+                        BlocProvider.of<OrganizationBloc>(context),
+                    child: PositionPage(state.positions)))));
           },
           child: Container(
             padding: EdgeInsets.all(8.0),
@@ -221,7 +224,8 @@ class _SearchBarHeaderDelegate extends SliverPersistentHeaderDelegate {
           searchReturn: (user) {
             if (user is User) {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProfilePage(user.id)));
+                  builder: (context) =>
+                      context.clientProvider(ProfilePage(user.id))));
             }
           },
         )

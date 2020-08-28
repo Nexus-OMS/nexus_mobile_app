@@ -101,8 +101,8 @@ class _ScannerPageState extends State<ScannerPage> {
             title: 'Attendance Saved',
             duration: Duration(seconds: 3),
             messageText: Builder(
-              builder: (context) {
-                return MemberTile(user: record.user);
+              builder: (_context) {
+                return context.clientProvider(MemberTile(user: record.user));
               },
             ))
           ..show(context);

@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus_mobile_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:nexus_mobile_app/bloc/repositories/event_repository.dart';
 import 'package:nexus_mobile_app/models/models.dart';
+import 'package:nexus_mobile_app/extensions.dart';
 import 'package:nexus_mobile_app/ui/components/tiles/error_tile.dart';
+import 'package:nexus_mobile_app/ui/decorators/bubble_tab_decorator.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/events_list.dart';
 import 'package:nexus_mobile_app/ui/pages/main/events/new_event_page.dart';
 
@@ -38,8 +40,8 @@ class _EventsPageState extends State<EventsPage>
 
   ///
   /// Returns a widget for the entire page
-  Widget _getTabController(context) {
-    var user = (BlocProvider.of<AuthenticationBloc>(context).state
+  Widget _getTabController() {
+    var user = (context.bloc<AuthenticationBloc>().state
             as AuthenticationStateAuthenticated)
         .user;
     return CustomScrollView(slivers: <Widget>[
@@ -51,7 +53,8 @@ class _EventsPageState extends State<EventsPage>
                   onPressed: () async {
                     var event = await Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => NewEventPage(types)));
+                            builder: (_context) =>
+                                context.clientProvider(NewEventPage(types))));
                     controller.add(event);
                   },
                 )
@@ -60,6 +63,7 @@ class _EventsPageState extends State<EventsPage>
         snap: true,
         floating: true,
         bottom: TabBar(
+          indicator: BubbleTabDecorator(Theme.of(context).accentColor),
           tabs: _getTabs(),
           controller: tabController,
         ),
@@ -106,9 +110,7 @@ class _EventsPageState extends State<EventsPage>
     Widget child;
     switch (_typesState) {
       case _TypesState.data:
-        child = Builder(builder: (BuildContext context) {
-          return _getTabController(context);
-        });
+        return _getTabController();
         break;
       case _TypesState.loading:
         child = Center(

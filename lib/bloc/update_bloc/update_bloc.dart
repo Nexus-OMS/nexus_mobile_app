@@ -10,7 +10,7 @@ part 'update_event.dart';
 part 'update_state.dart';
 
 class UpdateBloc extends Bloc<UpdateEvent, UpdateState> {
-  UpdateRepository _repository;
+  final UpdateRepository _repository;
 
   UpdateBloc({@required UpdateRepository repository})
       : assert(repository != null),

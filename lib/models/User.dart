@@ -89,7 +89,6 @@ class User extends APIModel {
         : (process != null && w is Map<dynamic, dynamic> ? process(w) : w);
   }
 
-  @override
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'o_id': id,

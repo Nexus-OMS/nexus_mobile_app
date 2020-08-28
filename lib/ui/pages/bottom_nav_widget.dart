@@ -10,7 +10,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:nexus_mobile_app/extensions.dart';
 
 import 'dashboard_page.dart';
-import 'events_page.dart';
+import 'main/events/events_page.dart';
 import 'main/updates_page.dart';
 
 class BottomNavWidget extends StatefulWidget {

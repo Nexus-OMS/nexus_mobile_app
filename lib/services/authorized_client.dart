@@ -136,20 +136,21 @@ class AuthorizedClient {
     }
   }
 
-  Future<Widget> getProfileAvatar(String route, String initials) async {
+  Future<Widget> getProfileAvatar(String route, String initials,
+      {double size = 24}) async {
     return CachedNetworkImage(
       imageUrl: await uri + route,
       httpHeaders: {HttpHeaders.authorizationHeader: 'Bearer ' + await token},
       imageBuilder: (context, imageProvider) => CircleAvatar(
         backgroundColor: Color(0xFFEEEEEE),
         backgroundImage: imageProvider,
-        radius: 24,
+        radius: size,
       ),
       placeholder: (context, url) => CircularProgressIndicator(),
       errorWidget: (context, url, error) => CircleAvatar(
         backgroundColor: Color(0xFFEEEEEE),
         child: Text(initials),
-        radius: 24,
+        radius: size,
       ),
     );
   }
@@ -168,17 +169,12 @@ class AuthorizedClient {
         break;
       case HttpStatus.unauthorized:
         {
-          debugPrint('== Unauthorized ==');
-          showDialog(
-              context: context,
-              builder: (_context) {
-                return AlertDialog(
-                  title: Text('Signed Out'),
-                  content: Text(
-                      'An authorization error has occurred and you have been logged out.\nIf this is a reoccuring issue please contact the developers.'),
-                );
-              });
-          deauthorize();
+          return _handleAuthErrorResp(response);
+        }
+        break;
+      case HttpStatus.forbidden:
+        {
+          return _handleAuthErrorResp(response);
         }
         break;
       default:
@@ -187,6 +183,21 @@ class AuthorizedClient {
           throw HttpRequestError(response.statusCode);
         }
     }
+  }
+
+  dynamic _handleAuthErrorResp(Response response) {
+    showDialog(
+        context: context,
+        builder: (_context) {
+          return AlertDialog(
+            title: Text('Signed Out'),
+            content: Text(
+                'An authorization error has occurred and you have been logged out.\nIf this is a reoccuring issue please contact the developers.'),
+          );
+        });
+    authErrorController.add(response.body);
+    deauthorize();
+    return response.body;
   }
 
   // Should have a catchError block whenever this is called.
