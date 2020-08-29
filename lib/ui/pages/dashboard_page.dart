@@ -292,10 +292,19 @@ class _DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
                       initials: user.getInitials(), route: user.image_uri);
                 }),
                 Spacer(),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    //TODO Settings page
+                PopupMenuButton(
+                  child: Icon(Icons.settings),
+                  elevation: 3.2,
+                  onSelected: (value) => value(),
+                  itemBuilder: (BuildContext _context) {
+                    return [
+                      PopupMenuItem(
+                        value: () => context
+                            .bloc<AuthenticationBloc>()
+                            .add(AuthenticationEventSignOut()),
+                        child: Text('Sign Out'),
+                      )
+                    ];
                   },
                 )
               ],

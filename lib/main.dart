@@ -22,6 +22,7 @@ class NexusApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Nexus',
         theme: NexusTheme.light(context),
         darkTheme: NexusTheme.dark(context),

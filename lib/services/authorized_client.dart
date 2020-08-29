@@ -78,7 +78,7 @@ class AuthorizedClient {
   static Future<void> openSignIn() async {
     final url = '${await uri}/mobile/login';
     if (await canLaunch(url)) {
-      await launch(url);
+      await launch(url, forceSafariVC: true);
     } else {
       throw 'Could not launch $url';
     }
@@ -196,7 +196,6 @@ class AuthorizedClient {
           );
         });
     authErrorController.add(response.body);
-    deauthorize();
     return response.body;
   }
 

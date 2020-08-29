@@ -57,6 +57,7 @@ class AuthenticationRepository extends APIRepository {
   }
 
   Future signOut() async {
+    AuthorizedClient.deauthorize();
     isAuthenticated = false;
   }
 }
